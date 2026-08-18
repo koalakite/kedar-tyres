@@ -369,7 +369,7 @@ const searchVehicle = () => {
 
         <div className="logo-section">
           <img
-            src="/logo.png"
+            src={`${import.meta.env.BASE_URL}logo.png`}
             alt="Kedar Tyres"
             className="brand-logo"
           />
@@ -524,7 +524,7 @@ const searchVehicle = () => {
 
           <div className="shop-image">
             <img
-              src="/shop.png"
+              src={`${import.meta.env.BASE_URL}shop.png`}
               alt="Kedar Tyres shop"
             />
           </div>
@@ -1076,7 +1076,7 @@ const searchVehicle = () => {
     <div className="footer-brand">
 
       <img
-        src="/logo.png"
+        src={`${import.meta.env.BASE_URL}logo.png`}
         alt="Kedar Tyres"
         className="footer-logo"
       />
@@ -2277,7 +2277,7 @@ const searchVehicle = () => {
               <div className="tyre-image-container">
 
                 <img
-                  src="/tyrecode.jfif"
+                  src={`${import.meta.env.BASE_URL}tyrecode.jfif`}
                   alt="Tyre size markings explained"
                 />
 
