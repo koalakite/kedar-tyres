@@ -1,3 +1,4 @@
+import { supabase } from "./supabase";
 import { useState, useEffect } from "react";
 import "./App.css";
 import { tyreData } from "./tyreData";
@@ -92,47 +93,136 @@ function App() {
   }, []);
 
   const completeCustomerLogin = async () => {
-    const { name, email, phone, password } = customerLogin;
-    if (!name.trim() || !email.trim() || !phone.trim() || !password.trim()) {
-      setLoginMessage("Please fill in all fields.");
-      return;
-    }
+  const { name, email, phone, password } = customerLogin;
 
-    setLoginLoading(true);
-    setLoginMessage("");
+  if (!name.trim() || !email.trim() || !phone.trim() || !password.trim()) {
+    setLoginMessage("Please fill in all fields.");
+    return;
+  }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/customer/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ name: name.trim(), email: email.trim(), phone: phone.trim(), password })
+  if (password.length < 8) {
+    setLoginMessage("Password must be at least 8 characters.");
+    return;
+  }
+
+  setLoginLoading(true);
+  setLoginMessage("");
+
+  try {
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = name.trim();
+    const cleanPhone = phone.trim();
+
+    // First try to log in an existing customer
+    const { data: loginData, error: loginError } =
+      await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password,
       });
-      const data = await response.json();
-      if (!response.ok) {
-        setLoginMessage(data.message || "Login failed. Please try again.");
-        setLoginLoading(false);
-        return;
-      }
+
+    if (!loginError && loginData.user) {
       setLoginMessage("✓ Login successful!");
       setCustomerLoggedIn(true);
       setLoginLoading(false);
+
       setTimeout(() => {
         setShowCustomerLogin(false);
+
         if (contactAction === "call") {
           window.location.href = "tel:+919404522221";
         } else if (contactAction === "whatsapp") {
-          window.open("https://wa.me/919404522221", "_blank", "noopener,noreferrer");
+          window.open(
+            "https://wa.me/919404522221",
+            "_blank",
+            "noopener,noreferrer"
+          );
         }
+
         setContactAction(null);
-        setCustomerLogin({ name: "", email: "", phone: "", password: "" });
+        setCustomerLogin({
+          name: "",
+          email: "",
+          phone: "",
+          password: "",
+        });
         setLoginMessage("");
       }, 1200);
-    } catch {
-      setLoginMessage("Unable to connect to the login server. Please make sure Flask is running.");
-      setLoginLoading(false);
+
+      return;
     }
-  };
+
+    // If login failed, try creating a new Supabase account
+    const { data: signupData, error: signupError } =
+  await supabase.auth.signUp({
+    email: cleanEmail,
+    password,
+    options: {
+      data: {
+        name: cleanName,
+        phone: cleanPhone,
+      },
+    },
+  });
+
+    if (signupError) {
+      setLoginMessage(
+        signupError.message.includes("already registered")
+          ? "Incorrect email or password."
+          : signupError.message
+      );
+      setLoginLoading(false);
+      return;
+    }
+
+    if (!signupData.user) {
+      setLoginMessage("Unable to create your account. Please try again.");
+      setLoginLoading(false);
+      return;
+    }
+
+    // Create the customer's profile in the customers table
+    
+    // Supabase may require email confirmation before creating a session
+    if (!signupData.session) {
+      setLoginMessage(
+        "Account created! Please verify your email, then sign in."
+      );
+      setLoginLoading(false);
+      return;
+    }
+
+    setLoginMessage("✓ Login successful!");
+    setCustomerLoggedIn(true);
+    setLoginLoading(false);
+
+    setTimeout(() => {
+      setShowCustomerLogin(false);
+
+      if (contactAction === "call") {
+        window.location.href = "tel:+919404522221";
+      } else if (contactAction === "whatsapp") {
+        window.open(
+          "https://wa.me/919404522221",
+          "_blank",
+          "noopener,noreferrer"
+        );
+      }
+
+      setContactAction(null);
+      setCustomerLogin({
+        name: "",
+        email: "",
+        phone: "",
+        password: "",
+      });
+      setLoginMessage("");
+    }, 1200);
+  } catch (error) {
+    console.error("Customer login error:", error);
+    setLoginMessage("Unable to connect to Supabase. Please try again.");
+    setLoginLoading(false);
+  }
+};
 
   const toggleFavourite = (tyre, brand) => {
     const id = `${brand}-${tyre.size}`;
