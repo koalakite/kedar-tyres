@@ -109,7 +109,6 @@ function App() {
       if (!adminError && adminData) {
         setAdminLoggedIn(true);
         setCustomerLoggedIn(false);
-        setShowAdminPanel(true);
       } else {
         setAdminLoggedIn(false);
         setCustomerLoggedIn(true);
