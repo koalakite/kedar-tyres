@@ -81,16 +81,58 @@ function App() {
   };
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/session`, { credentials: "include" })
-      .then((response) => response.ok ? response.json() : null)
-      .then((data) => {
-        if (data) {
-          setCustomerLoggedIn(Boolean(data.customer));
-          setAdminLoggedIn(Boolean(data.admin));
-        }
-      })
-      .catch(() => {});
-  }, []);
+  let mounted = true;
+
+  const restoreSession = async () => {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!mounted) return;
+
+      if (!session?.user) {
+        setCustomerLoggedIn(false);
+        setAdminLoggedIn(false);
+        setShowAdminPanel(false);
+        return;
+      }
+
+      const { data: adminData, error: adminError } = await supabase
+        .from("admins")
+        .select("id, name")
+        .eq("id", session.user.id)
+        .maybeSingle();
+
+      if (!mounted) return;
+
+      if (!adminError && adminData) {
+        setAdminLoggedIn(true);
+        setCustomerLoggedIn(false);
+        setShowAdminPanel(true);
+      } else {
+        setAdminLoggedIn(false);
+        setCustomerLoggedIn(true);
+        setShowAdminPanel(false);
+      }
+    } catch (error) {
+      console.error("Session restore error:", error);
+    }
+  };
+
+  restoreSession();
+
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange(() => {
+    restoreSession();
+  });
+
+  return () => {
+    mounted = false;
+    subscription.unsubscribe();
+  };
+}, []);
 
   const completeCustomerLogin = async () => {
   const { name, email, phone, password } = customerLogin;
@@ -542,23 +584,14 @@ const searchVehicle = () => {
 
       {/* TYRES */}
       <button
-  className="side-menu-link"
-  onClick={() => {
-    // setMenuOpen(false);
-<button
-  className="side-menu-link"
-  onClick={() => {
-    setMenuOpen(false);
-    setShowProductPage("tyres");
-  }}
->
-  Tyres
-</button>
-    setShowProductPage("tyres");
-  }}
->
-  Tyres
-</button>
+        className="side-menu-link"
+        onClick={() => {
+          setMenuOpen(false);
+          setShowProductPage("tyres");
+        }}
+      >
+        Tyres
+      </button>
 
       {/* SERVICES */}
       <button
@@ -594,6 +627,19 @@ const searchVehicle = () => {
       >
         Contact Us
       </a>
+
+      {/* ADMIN CATALOGUE */}
+      {adminLoggedIn && (
+        <button
+          className="side-menu-link"
+          onClick={() => {
+            setMenuOpen(false);
+            setShowAdminPanel(true);
+          }}
+        >
+          🔐 Admin Catalogue
+        </button>
+      )}
 
     </div>
   </div>
@@ -2703,39 +2749,59 @@ const searchVehicle = () => {
               className="login-submit"
               type="button"
               onClick={async () => {
-                if (!adminLogin.name.trim() || !adminLogin.password) {
-                  setAdminMessage("Please enter the admin name and password.");
-                  return;
-                }
-                setLoginLoading(true);
-                setAdminMessage("");
-                try {
-                  const response = await fetch(`${API_BASE_URL}/api/admin/login`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                    body: JSON.stringify({ name: adminLogin.name.trim(), password: adminLogin.password })
-                  });
-                  const data = await response.json();
-                  if (!response.ok) {
-                    setAdminMessage(data.message || "Incorrect admin name or password.");
-                    setLoginLoading(false);
-                    return;
-                  }
-                  setAdminMessage("✓ Login successful!");
-                  setAdminLoggedIn(true);
-                  setLoginLoading(false);
-                  setTimeout(() => {
-                    setShowAdminLogin(false);
-                    setShowAdminPanel(true);
-                    setAdminLogin({ name: "", password: "" });
-                    setAdminMessage("");
-                  }, 900);
-                } catch {
-                  setAdminMessage("Unable to connect to the login server. Please make sure Flask is running.");
-                  setLoginLoading(false);
-                }
-              }}
+  if (!adminLogin.name.trim() || !adminLogin.password) {
+    setAdminMessage("Please enter the admin name and password.");
+    return;
+  }
+
+  setLoginLoading(true);
+  setAdminMessage("");
+
+  try {
+    const email = adminLogin.name.trim();
+
+    const { data: authData, error: authError } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password: adminLogin.password,
+      });
+
+    if (authError || !authData.user) {
+      setAdminMessage("Incorrect admin name or password.");
+      setLoginLoading(false);
+      return;
+    }
+
+    const { data: adminData, error: adminError } =
+      await supabase
+        .from("admins")
+        .select("id, name")
+        .eq("id", authData.user.id)
+        .maybeSingle();
+
+    if (adminError || !adminData) {
+      await supabase.auth.signOut();
+      setAdminMessage("You do not have admin access.");
+      setLoginLoading(false);
+      return;
+    }
+
+    setAdminMessage("✓ Login successful!");
+    setAdminLoggedIn(true);
+    setLoginLoading(false);
+
+    setTimeout(() => {
+      setShowAdminLogin(false);
+      setShowAdminPanel(true);
+      setAdminLogin({ name: "", password: "" });
+      setAdminMessage("");
+    }, 900);
+  } catch (error) {
+    console.error("Admin login error:", error);
+    setAdminMessage("Unable to connect to Supabase. Please try again.");
+    setLoginLoading(false);
+  }
+}}
             >
               {loginLoading ? "Signing in..." : "Open Admin Panel →"}
             </button>
