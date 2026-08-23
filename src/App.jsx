@@ -892,7 +892,7 @@ const searchVehicle = () => {
           <div className="shop-info">
 
             <p className="hero-label">
-              KEDAR TYRES
+              KEDAR TYRES 
             </p>
 
             <h1>
@@ -903,7 +903,7 @@ const searchVehicle = () => {
 
             <p className="hero-description">
               Quality tyres, reliable service and everything
-              you need to keep your journey moving.
+              you need to keep your journey moving. 
             </p>
 
             <div className="hero-buttons">
@@ -1472,7 +1472,7 @@ const searchVehicle = () => {
       </p>
 
       <div className="footer-social-text">
-        Your trusted tyre partner.
+        <b>Location: VITTHALWADI, OPPOSITE POLICE STATION, SINHAGAD ROAD, PUNE.</b>
       </div>
 
     </div>
