@@ -303,3 +303,20 @@ export const vehicleData = [
   { manufacturer: "VOLKSWAGEN", model: "JETTA", front: "205-55-16", rear: "" },
   { manufacturer: "ASHOK LYLAND", model: "DOST NEW", front: "195-R-15 T L", rear: "" },
 ];
+
+export const getVehicleImageKey = (vehicle) => {
+  const manufacturer = vehicle.manufacturer
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^A-Z0-9-]/g, "");
+
+  const model = vehicle.model
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^A-Z0-9-]/g, "");
+
+  return `${manufacturer}-${model}`;
+};
+

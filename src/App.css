@@ -1,44 +1,57 @@
 /* =====================================================
-   KEDAR TYRES — BLUE / WHITE / RED DESIGN
+   KEDAR TYRES — NAVY / CREAM / CRIMSON
+   A minimalist, editorial redesign built around three
+   colours and two typefaces. Flat surfaces, hairline
+   rules, generous whitespace — no gradients, no glass.
 ===================================================== */
 
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,480;0,9..144,600;1,9..144,460&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap");
+
 :root {
-  --navy: #071a3d;
-  --navy-2: #0b2554;
-  --blue: #0d47a1;
-  --bright-blue: #1769e0;
-  --blue-light: #eaf3ff;
-  --blue-pale: #f4f8ff;
+  /* ---- core palette (navy / cream / crimson) ---- */
+  --navy: #0F1F3D;
+  --navy-2: #16305A;
+  --blue: #24427A;
+  --bright-blue: #2F5290;
+  --blue-light: #F4EFE3;
+  --blue-pale: #FAF7EF;
 
-  --red: #e53935;
-  --red-dark: #c62828;
-  --red-light: #fff0f0;
+  --red: #A61C2E;
+  --red-dark: #7D1521;
+  --red-light: #F7E9E7;
 
-  --white: #ffffff;
-  --off-white: #f6f9fd;
+  --white: #FFFDF8;
+  --off-white: #F4EFE3;
 
-  --text: #0b1736;
-  --text-soft: #33415c;
-  --muted: #68758a;
+  --text: #14213D;
+  --text-soft: #4A4636;
+  --muted: #6B6558;
 
-  --border: rgba(13, 71, 161, 0.12);
-  --border-dark: rgba(255, 255, 255, 0.14);
+  --border: rgba(15, 31, 61, 0.14);
+  --border-dark: rgba(255, 253, 248, 0.14);
 
-  --glass: rgba(255, 255, 255, 0.72);
-  --glass-strong: rgba(255, 255, 255, 0.88);
+  --glass: rgba(255, 253, 248, 0.9);
+  --glass-strong: rgba(255, 253, 248, 0.97);
 
   --shadow:
-    0 18px 45px rgba(7, 26, 61, 0.10);
+    0 1px 2px rgba(15, 31, 61, 0.06),
+    0 12px 28px rgba(15, 31, 61, 0.08);
 
   --shadow-blue:
-    0 18px 45px rgba(23, 105, 224, 0.18);
+    0 1px 2px rgba(15, 31, 61, 0.06),
+    0 14px 30px rgba(15, 31, 61, 0.10);
 
   --shadow-red:
-    0 12px 30px rgba(229, 57, 53, 0.18);
+    0 10px 22px rgba(166, 28, 46, 0.16);
 
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 22px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  /* ---- typography ---- */
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", Menlo, monospace;
 }
 
 
@@ -57,13 +70,25 @@ html {
 }
 
 body {
-  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
   background: var(--off-white);
   color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 480;
+  letter-spacing: -0.01em;
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font-family: inherit;
 }
 
@@ -71,59 +96,28 @@ button {
   cursor: pointer;
 }
 
+/* small labels, eyebrows, tyre-size codes: the mono
+   utility face is this design's signature detail —
+   it echoes the stamped codes on a tyre sidewall */
+.section-eyebrow,
+.hero-label,
+.catalogue-field-label {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
 .app {
   min-height: 100vh;
-  background:
-    radial-gradient(
-      circle at 80% 10%,
-      rgba(23, 105, 224, 0.06),
-      transparent 28%
-    ),
-    var(--off-white);
+  background: var(--off-white);
 }
 
 
 /* =====================================================
    NAVBAR
+   (.main-header / .logo-section / .brand-logo /
+   .navbar-actions / base .menu-icon live in the
+   consolidated NAVBAR block near the end of this file)
 ===================================================== */
-
-.main-header {
-  position: sticky;
-  z-index: 3000;
-  top: 0;
-  height: 72px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 0 45px;
-
-  background: #ffffff;
-
-  border-bottom: 1px solid rgba(13, 71, 161, 0.08);
-
-  box-shadow:
-    0 5px 25px rgba(7, 26, 61, 0.04);
-}
-
-.logo-section {
-  display: flex;
-  align-items: center;
-}
-
-.brand-logo {
-  width: 150px;
-  height: auto;
-  display: block;
-  object-fit: contain;
-}
-
-.navbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
 
 .nav-icon {
   width: 38px;
@@ -151,7 +145,7 @@ button {
 .nav-icon:hover {
   background: var(--blue-light);
   color: var(--blue);
-  border-color: rgba(23, 105, 224, 0.15);
+  border-color: rgba(47, 82, 144, 0.15);
   transform: translateY(-2px);
 }
 
@@ -164,25 +158,6 @@ button {
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-
-.menu-icon {
-  flex-direction: column;
-  gap: 4px;
-}
-
-.menu-icon span {
-  width: 20px;
-  height: 2px;
-
-  display: block;
-
-  background: currentColor;
-  border-radius: 2px;
-
-  transition:
-    width 0.2s ease,
-    transform 0.2s ease;
 }
 
 .menu-icon:hover span:nth-child(2) {
@@ -208,28 +183,11 @@ button {
 
   overflow: hidden;
 
-  background:
-    radial-gradient(
-      circle at 85% 50%,
-      rgba(23, 105, 224, 0.10),
-      transparent 30%
-    ),
-    var(--white);
+  background: var(--white);
 }
 
 .hero::before {
-  content: "";
-
-  position: absolute;
-  width: 360px;
-  height: 360px;
-
-  right: -180px;
-  top: -170px;
-
-  border-radius: 50%;
-
-  background: rgba(23, 105, 224, 0.07);
+  content: none;
 }
 
 .hero::after {
@@ -244,11 +202,7 @@ button {
 
   border-radius: 10px;
 
-  background: linear-gradient(
-    90deg,
-    var(--blue),
-    var(--red)
-  );
+  background: var(--red);
 }
 
 .shop-image {
@@ -259,11 +213,11 @@ button {
 
   overflow: hidden;
 
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
 
-  border: 5px solid rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--border);
 
-  box-shadow: var(--shadow-blue);
+  box-shadow: var(--shadow);
 
   background: var(--blue-light);
 }
@@ -276,12 +230,7 @@ button {
 
   pointer-events: none;
 
-  background:
-    linear-gradient(
-      135deg,
-      rgba(7, 26, 61, 0.08),
-      transparent 50%
-    );
+  background: none;
 }
 
 .shop-image img {
@@ -354,7 +303,7 @@ button {
 
 .shop-info h1::selection {
   background: var(--bright-blue);
-  color: white;
+  color: var(--white);
 }
 
 .hero-description {
@@ -395,31 +344,26 @@ button {
 .primary-button {
   border: none;
 
-  background:
-    linear-gradient(
-      135deg,
-      var(--blue),
-      var(--bright-blue)
-    );
+  background: var(--navy);
 
   color: var(--white);
 
   box-shadow:
-    0 8px 22px rgba(13, 71, 161, 0.22);
+    0 8px 22px rgba(36, 66, 122, 0.22);
 }
 
 .primary-button:hover {
   transform: translateY(-3px);
 
   box-shadow:
-    0 14px 30px rgba(13, 71, 161, 0.28);
+    0 14px 30px rgba(36, 66, 122, 0.28);
 }
 
 .secondary-button {
   background: var(--white);
   color: var(--navy);
 
-  border: 1px solid rgba(13, 71, 161, 0.18);
+  border: 1px solid rgba(36, 66, 122, 0.18);
 }
 
 .secondary-button:hover {
@@ -430,7 +374,7 @@ button {
   color: var(--blue);
 
   box-shadow:
-    0 10px 25px rgba(13, 71, 161, 0.10);
+    0 10px 25px rgba(36, 66, 122, 0.10);
 }
 
 
@@ -444,7 +388,7 @@ button {
 
   z-index: 1000;
 
-  background: rgba(7, 26, 61, 0.48);
+  background: rgba(15, 31, 61, 0.48);
 
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -461,17 +405,12 @@ button {
 
   padding: 40px 30px;
 
-  background:
-    linear-gradient(
-      160deg,
-      rgba(255, 255, 255, 0.96),
-      rgba(239, 247, 255, 0.94)
-    );
+  background: var(--white);
 
-  border-left: 1px solid rgba(255, 255, 255, 0.7);
+  border-left: 1px solid rgba(255, 253, 248, 0.7);
 
   box-shadow:
-    -15px 0 50px rgba(7, 26, 61, 0.18);
+    -15px 0 50px rgba(15, 31, 61, 0.18);
 
   animation: sideMenuIn 0.25s ease-out;
 }
@@ -513,7 +452,7 @@ button {
 
 .close-menu:hover {
   background: var(--red);
-  color: white;
+  color: var(--white);
   transform: rotate(90deg);
 }
 
@@ -558,7 +497,7 @@ button {
   background: transparent;
   border: none;
 
-  border-bottom: 1px solid rgba(13, 71, 161, 0.10);
+  border-bottom: 1px solid rgba(36, 66, 122, 0.10);
 
   transition:
     padding-left 0.2s ease,
@@ -581,12 +520,7 @@ button {
 
   padding: 55px 0 65px;
 
-  background:
-    linear-gradient(
-      180deg,
-      var(--blue-pale),
-      #edf5ff
-    );
+  background: var(--white);
 }
 
 .product-section {
@@ -634,7 +568,7 @@ button {
 
   background: var(--blue);
 
-  color: white;
+  color: var(--white);
 
   font-size: 16px;
 
@@ -689,18 +623,13 @@ button {
 
   padding: 20px;
 
-  border: 1px solid rgba(13, 71, 161, 0.11);
+  border: 1px solid rgba(36, 66, 122, 0.11);
   border-radius: 18px;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.94),
-      rgba(255, 255, 255, 0.72)
-    );
+  background: var(--white);
 
   box-shadow:
-    0 8px 25px rgba(7, 26, 61, 0.06);
+    0 8px 25px rgba(15, 31, 61, 0.06);
 
   backdrop-filter: blur(12px);
 
@@ -723,13 +652,7 @@ button {
 
   border-radius: 0 0 5px 5px;
 
-  background:
-    linear-gradient(
-      90deg,
-      var(--blue),
-      var(--bright-blue),
-      var(--red)
-    );
+  background: var(--red);
 
   opacity: 0;
 
@@ -739,10 +662,10 @@ button {
 .product-card:hover {
   transform: translateY(-7px);
 
-  border-color: rgba(23, 105, 224, 0.25);
+  border-color: rgba(47, 82, 144, 0.25);
 
   box-shadow:
-    0 18px 40px rgba(13, 71, 161, 0.15);
+    0 18px 40px rgba(36, 66, 122, 0.15);
 }
 
 .product-card:hover::before {
@@ -772,12 +695,7 @@ button {
 
   padding: 70px 45px 75px;
 
-  background:
-    linear-gradient(
-      135deg,
-      var(--navy),
-      var(--navy-2)
-    );
+  background: var(--navy);
 
   overflow: hidden;
 }
@@ -795,7 +713,7 @@ button {
 
   border-radius: 50%;
 
-  background: rgba(23, 105, 224, 0.18);
+  background: rgba(47, 82, 144, 0.18);
 }
 
 .services-section::after {
@@ -811,7 +729,7 @@ button {
 
   border-radius: 50%;
 
-  background: rgba(229, 57, 53, 0.10);
+  background: rgba(194, 38, 56, 0.10);
 }
 
 .services-inner {
@@ -858,7 +776,7 @@ button {
 .services-header .section-eyebrow {
   margin-bottom: 10px;
 
-  color: #6fb0ff;
+  color: #5B7FB8;
 
   font-size: 9px;
   font-weight: 800;
@@ -882,7 +800,7 @@ button {
 .services-header p {
   max-width: 520px;
 
-  color: rgba(255, 255, 255, 0.68);
+  color: rgba(255, 253, 248, 0.68);
 
   font-size: 12px;
   line-height: 1.6;
@@ -924,7 +842,7 @@ button {
 
   align-items: start;
 
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(255, 253, 248, 0.035);
 
   border: none;
 
@@ -950,7 +868,7 @@ button {
 }
 
 .service-card:hover {
-  background: rgba(255, 255, 255, 0.075);
+  background: rgba(255, 253, 248, 0.075);
 
   transform: translateY(-3px);
 }
@@ -990,7 +908,7 @@ button {
 
   padding-top: 3px;
 
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 253, 248, 0.35);
 
   font-size: 9px;
   font-weight: 800;
@@ -1001,7 +919,7 @@ button {
 }
 
 .service-card:hover .service-number {
-  color: #ff7773;
+  color: #D6707B;
 }
 
 
@@ -1023,11 +941,11 @@ button {
   border-radius: 11px;
 
   background:
-    rgba(255, 255, 255, 0.09);
+    rgba(255, 253, 248, 0.09);
 
-  color: #6fb0ff;
+  color: #5B7FB8;
 
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 253, 248, 0.08);
 
   font-size: 14px;
 
@@ -1040,12 +958,12 @@ button {
 
 .service-card:hover .service-icon {
   background: var(--blue);
-  color: #fff;
+  color: #FFFDF8;
 
   transform: translateY(-2px) rotate(-2deg);
 
   box-shadow:
-    0 8px 20px rgba(23, 105, 224, 0.30);
+    0 8px 20px rgba(47, 82, 144, 0.30);
 }
 
 
@@ -1074,7 +992,7 @@ button {
 .service-content p {
   max-width: 175px;
 
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 253, 248, 0.55);
 
   font-size: 10px;
   line-height: 1.55;
@@ -1084,7 +1002,7 @@ button {
   grid-column: 4;
   grid-row: 1;
 
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 253, 248, 0.35);
 
   font-size: 16px;
 
@@ -1094,7 +1012,7 @@ button {
 }
 
 .service-card:hover .service-arrow {
-  color: #ff7773;
+  color: #D6707B;
   transform: translateX(4px);
 }
 
@@ -1120,7 +1038,7 @@ button {
 .trust-header .section-eyebrow {
   margin-bottom: 9px;
 
-  color: #6fb0ff;
+  color: #5B7FB8;
 
   font-size: 9px;
   font-weight: 800;
@@ -1142,7 +1060,7 @@ button {
 
   margin: 7px 0 0;
 
-  color: rgba(255, 255, 255, 0.60);
+  color: rgba(255, 253, 248, 0.60);
 
   font-size: 11px;
   line-height: 1.6;
@@ -1190,7 +1108,7 @@ button {
 
   text-align: left;
 
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(255, 253, 248, 0.025);
 
   transition:
     background 0.3s ease,
@@ -1206,7 +1124,7 @@ button {
 }
 
 .trust-item:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 253, 248, 0.07);
 
   transform: translateY(-3px);
 }
@@ -1255,11 +1173,11 @@ button {
   align-items: center;
   justify-content: center;
 
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 253, 248, 0.08);
 
-  color: #6fb0ff;
+  color: #5B7FB8;
 
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 253, 248, 0.08);
 
   border-radius: 11px;
 
@@ -1273,7 +1191,7 @@ button {
 
 .trust-item:hover .trust-icon {
   background: var(--red);
-  color: #fff;
+  color: #FFFDF8;
 
   transform: scale(1.05);
 }
@@ -1305,7 +1223,7 @@ button {
 
   margin: 0;
 
-  color: rgba(255, 255, 255, 0.52);
+  color: rgba(255, 253, 248, 0.52);
 
   font-size: 9.5px;
   line-height: 1.5;
@@ -1331,13 +1249,7 @@ button {
 
   overflow: hidden;
 
-  background:
-    linear-gradient(
-      125deg,
-      #071a3d 0%,
-      #0b2b60 65%,
-      #0d47a1 100%
-    );
+  background: var(--navy);
 }
 
 .contact-section::before {
@@ -1353,7 +1265,7 @@ button {
 
   border-radius: 50%;
 
-  border: 45px solid rgba(255, 255, 255, 0.035);
+  border: 45px solid rgba(255, 253, 248, 0.035);
 }
 
 .contact-section::after {
@@ -1381,7 +1293,7 @@ button {
 .contact-section .section-eyebrow {
   margin-bottom: 8px;
 
-  color: #78b5ff;
+  color: #5B7FB8;
 
   font-size: 10px;
   font-weight: 800;
@@ -1392,7 +1304,7 @@ button {
 .contact-section h2 {
   margin-bottom: 11px;
 
-  color: #fff;
+  color: #FFFDF8;
 
   font-size: 35px;
   line-height: 1.12;
@@ -1401,7 +1313,7 @@ button {
 .contact-section p:not(.section-eyebrow) {
   max-width: 550px;
 
-  color: rgba(255, 255, 255, 0.70);
+  color: rgba(255, 253, 248, 0.70);
 
   font-size: 13px;
   line-height: 1.65;
@@ -1426,7 +1338,7 @@ button {
   font-weight: 800;
 
   box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.15);
+    0 12px 30px rgba(15, 31, 61, 0.15);
 
   transition:
     transform 0.25s ease,
@@ -1445,7 +1357,7 @@ button {
   transform: translateY(-4px);
 
   background: var(--red);
-  color: white;
+  color: var(--white);
 
   box-shadow: var(--shadow-red);
 }
@@ -1463,7 +1375,7 @@ button {
   position: fixed;
   inset: 0;
 
-  z-index: 2000;
+  z-index: 5200;
 
   display: flex;
   align-items: center;
@@ -1472,7 +1384,7 @@ button {
   padding: 30px;
 
   background:
-    rgba(7, 26, 61, 0.55);
+    rgba(15, 31, 61, 0.55);
 
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -1485,19 +1397,14 @@ button {
 
   padding: 45px;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.96),
-      rgba(239, 247, 255, 0.91)
-    );
+  background: var(--white);
 
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 253, 248, 0.8);
 
   border-radius: 24px;
 
   box-shadow:
-    0 35px 90px rgba(7, 26, 61, 0.28);
+    0 35px 90px rgba(15, 31, 61, 0.28);
 
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -1526,10 +1433,10 @@ button {
   width: 36px;
   height: 36px;
 
-  border: 1px solid rgba(13, 71, 161, 0.10);
+  border: 1px solid rgba(36, 66, 122, 0.10);
   border-radius: 50%;
 
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 253, 248, 0.8);
 
   color: var(--navy);
 
@@ -1543,7 +1450,7 @@ button {
 
 .search-close:hover {
   background: var(--red);
-  color: white;
+  color: var(--white);
   transform: rotate(90deg);
 }
 
@@ -1597,11 +1504,11 @@ button {
 
   padding: 18px;
 
-  border: 1px solid rgba(13, 71, 161, 0.12);
+  border: 1px solid rgba(36, 66, 122, 0.12);
 
   border-radius: 15px;
 
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 253, 248, 0.75);
 
   text-align: left;
 
@@ -1617,10 +1524,10 @@ button {
 
   border-color: var(--blue);
 
-  background: white;
+  background: var(--white);
 
   box-shadow:
-    0 15px 35px rgba(13, 71, 161, 0.13);
+    0 15px 35px rgba(36, 66, 122, 0.13);
 }
 
 .choice-icon {
@@ -1646,7 +1553,7 @@ button {
 
 .search-choice:hover .choice-icon {
   background: var(--blue);
-  color: white;
+  color: var(--white);
 }
 
 .tube-icon {
@@ -1656,7 +1563,7 @@ button {
 
 .search-choice:hover .tube-icon {
   background: var(--red);
-  color: white;
+  color: var(--white);
 }
 
 .search-choice strong {
@@ -1700,7 +1607,7 @@ button {
   align-items: center;
   justify-content: center;
 
-  border: 1px solid rgba(13, 71, 161, 0.12);
+  border: 1px solid rgba(36, 66, 122, 0.12);
   border-radius: 50%;
 
   background: var(--blue-pale);
@@ -1717,7 +1624,7 @@ button {
 
 .back-button:hover {
   background: var(--blue);
-  color: white;
+  color: var(--white);
   transform: translateX(-2px);
 }
 
@@ -1738,12 +1645,12 @@ button {
 
   padding: 0 15px;
 
-  border: 1px solid rgba(13, 71, 161, 0.15);
+  border: 1px solid rgba(36, 66, 122, 0.15);
   border-radius: 11px;
 
   outline: none;
 
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 253, 248, 0.72);
 
   color: var(--text);
 
@@ -1758,10 +1665,10 @@ button {
 .size-input:focus {
   border-color: var(--blue);
 
-  background: white;
+  background: var(--white);
 
   box-shadow:
-    0 0 0 4px rgba(23, 105, 224, 0.10);
+    0 0 0 4px rgba(47, 82, 144, 0.10);
 }
 
 .guide-link {
@@ -1808,20 +1715,15 @@ button {
   border: none;
   border-radius: 11px;
 
-  background:
-    linear-gradient(
-      135deg,
-      var(--navy),
-      var(--blue)
-    );
+  background: var(--navy);
 
-  color: #fff;
+  color: #FFFDF8;
 
   font-size: 14px;
   font-weight: 700;
 
   box-shadow:
-    0 8px 22px rgba(13, 71, 161, 0.20);
+    0 8px 22px rgba(36, 66, 122, 0.20);
 
   transition:
     transform 0.25s ease,
@@ -1833,24 +1735,19 @@ button {
 .find-button:hover {
   transform: translateY(-2px);
 
-  background:
-    linear-gradient(
-      135deg,
-      var(--blue),
-      var(--bright-blue)
-    );
+  background: var(--navy);
 
   box-shadow:
-    0 13px 28px rgba(13, 71, 161, 0.28);
+    0 13px 28px rgba(36, 66, 122, 0.28);
 }
 
 .coming-soon {
   padding: 20px;
 
-  border: 1px solid rgba(13, 71, 161, 0.10);
+  border: 1px solid rgba(36, 66, 122, 0.10);
   border-radius: 13px;
 
-  background: rgba(234, 243, 255, 0.72);
+  background: rgba(244, 239, 227, 0.72);
 
   color: var(--text-soft);
 
@@ -1885,13 +1782,7 @@ button {
   overflow-y: auto;
   overflow-x: hidden;
 
-  background:
-    radial-gradient(
-      circle at 80% 20%,
-      rgba(23, 105, 224, 0.10),
-      transparent 30%
-    ),
-    var(--off-white);
+  background: var(--off-white);
 
   animation: guideIn 0.25s ease-out;
 }
@@ -1921,10 +1812,10 @@ button {
   align-items: center;
   justify-content: center;
 
-  border: 1px solid rgba(13, 71, 161, 0.12);
+  border: 1px solid rgba(36, 66, 122, 0.12);
   border-radius: 50%;
 
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 253, 248, 0.88);
 
   color: var(--navy);
 
@@ -1942,7 +1833,7 @@ button {
 
 .guide-exit:hover {
   background: var(--red);
-  color: white;
+  color: var(--white);
   transform: rotate(90deg);
 }
 
@@ -2027,10 +1918,10 @@ button {
 
   padding: 0 14px;
 
-  border: 1px solid rgba(13, 71, 161, 0.14);
+  border: 1px solid rgba(36, 66, 122, 0.14);
   border-radius: 10px;
 
-  background: rgba(255, 255, 255, 0.70);
+  background: rgba(255, 253, 248, 0.70);
 
   outline: none;
 
@@ -2043,14 +1934,14 @@ button {
 .form-field input:focus {
   border-color: var(--blue);
 
-  background: white;
+  background: var(--white);
 
   box-shadow:
-    0 0 0 4px rgba(23, 105, 224, 0.09);
+    0 0 0 4px rgba(47, 82, 144, 0.09);
 }
 
 .form-field span {
-  color: #8d9aaf;
+  color: #9C9483;
 
   font-size: 11px;
 }
@@ -2106,11 +1997,11 @@ button {
 
   overflow: hidden;
 
-  border: 1px solid rgba(13, 71, 161, 0.10);
+  border: 1px solid rgba(36, 66, 122, 0.10);
 
   border-radius: 18px;
 
-  background: white;
+  background: var(--white);
 
   box-shadow: var(--shadow);
 }
@@ -2139,11 +2030,11 @@ button {
 
   padding: 12px 8px;
 
-  border: 1px solid rgba(13, 71, 161, 0.10);
+  border: 1px solid rgba(36, 66, 122, 0.10);
 
   border-radius: 10px;
 
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 253, 248, 0.78);
 
   text-align: center;
 
@@ -2156,10 +2047,10 @@ button {
 .code-explanation div:hover {
   transform: translateY(-3px);
 
-  border-color: rgba(23, 105, 224, 0.25);
+  border-color: rgba(47, 82, 144, 0.25);
 
   box-shadow:
-    0 8px 20px rgba(13, 71, 161, 0.08);
+    0 8px 20px rgba(36, 66, 122, 0.08);
 }
 
 .code-explanation strong {
@@ -2187,17 +2078,11 @@ button {
   position: fixed;
   inset: 0;
 
-  z-index: 2400;
+  z-index: 5300;
 
   overflow-y: auto;
 
-  background:
-    radial-gradient(
-      circle at 90% 10%,
-      rgba(23, 105, 224, 0.08),
-      transparent 25%
-    ),
-    var(--off-white);
+  background: var(--off-white);
 }
 
 .results-header {
@@ -2208,9 +2093,9 @@ button {
 
   padding: 0 55px;
 
-  background: rgba(255, 255, 255, 0.90);
+  background: rgba(255, 253, 248, 0.90);
 
-  border-bottom: 1px solid rgba(13, 71, 161, 0.08);
+  border-bottom: 1px solid rgba(36, 66, 122, 0.08);
 
   backdrop-filter: blur(15px);
 }
@@ -2221,11 +2106,11 @@ button {
 
   margin-right: 20px;
 
-  border: 1px solid rgba(13, 71, 161, 0.12);
+  border: 1px solid rgba(36, 66, 122, 0.12);
 
   border-radius: 50%;
 
-  background: white;
+  background: var(--white);
 
   color: var(--navy);
 
@@ -2239,7 +2124,7 @@ button {
 
 .results-back:hover {
   background: var(--blue);
-  color: white;
+  color: var(--white);
   transform: translateX(-2px);
 }
 
@@ -2317,11 +2202,11 @@ button {
 .change-size-button {
   padding: 11px 17px;
 
-  border: 1px solid rgba(13, 71, 161, 0.14);
+  border: 1px solid rgba(36, 66, 122, 0.14);
 
   border-radius: 9px;
 
-  background: white;
+  background: var(--white);
 
   color: var(--navy);
 
@@ -2353,14 +2238,14 @@ button {
 .tyre-card {
   overflow: hidden;
 
-  border: 1px solid rgba(13, 71, 161, 0.10);
+  border: 1px solid rgba(36, 66, 122, 0.10);
 
   border-radius: 19px;
 
-  background: white;
+  background: var(--white);
 
   box-shadow:
-    0 8px 25px rgba(7, 26, 61, 0.06);
+    0 8px 25px rgba(15, 31, 61, 0.06);
 
   transition:
     transform 0.3s ease,
@@ -2371,10 +2256,10 @@ button {
 .tyre-card:hover {
   transform: translateY(-7px);
 
-  border-color: rgba(23, 105, 224, 0.22);
+  border-color: rgba(47, 82, 144, 0.22);
 
   box-shadow:
-    0 20px 45px rgba(13, 71, 161, 0.14);
+    0 20px 45px rgba(36, 66, 122, 0.14);
 }
 
 .tyre-card-image {
@@ -2388,12 +2273,7 @@ button {
 
   padding: 25px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #f0f6ff,
-      #f8fbff
-    );
+  background: var(--white);
 }
 
 .tyre-card-image::after {
@@ -2407,12 +2287,7 @@ button {
 
   height: 3px;
 
-  background:
-    linear-gradient(
-      90deg,
-      var(--blue),
-      var(--red)
-    );
+  background: var(--red);
 
   opacity: 0;
 
@@ -2445,11 +2320,11 @@ button {
   width: 38px;
   height: 38px;
 
-  border: 1px solid rgba(13, 71, 161, 0.12);
+  border: 1px solid rgba(36, 66, 122, 0.12);
 
   border-radius: 50%;
 
-  background: white;
+  background: var(--white);
 
   color: var(--navy);
 
@@ -2525,14 +2400,9 @@ button {
   border: none;
   border-radius: 9px;
 
-  background:
-    linear-gradient(
-      135deg,
-      var(--navy),
-      var(--blue)
-    );
+  background: var(--navy);
 
-  color: #fff;
+  color: #FFFDF8;
 
   font-size: 13px;
   font-weight: 700;
@@ -2546,7 +2416,7 @@ button {
   transform: translateY(-2px);
 
   box-shadow:
-    0 10px 25px rgba(13, 71, 161, 0.22);
+    0 10px 25px rgba(36, 66, 122, 0.22);
 }
 
 
@@ -2573,9 +2443,9 @@ button {
 
   border-radius: 50%;
 
-  background: #25d366;
+  background: #25D366;
 
-  color: #fff;
+  color: #FFFDF8;
 
   font-size: 27px;
 
@@ -2611,7 +2481,7 @@ button {
 
   background: var(--navy);
 
-  color: #fff;
+  color: #FFFDF8;
 
   font-size: 13px;
 
@@ -2638,13 +2508,7 @@ button {
 
   overflow-y: auto;
 
-  background:
-    radial-gradient(
-      circle at 85% 10%,
-      rgba(23, 105, 224, 0.08),
-      transparent 27%
-    ),
-    var(--off-white);
+  background: var(--off-white);
 
   animation: servicesPageIn 0.25s ease-out;
 }
@@ -2677,11 +2541,11 @@ button {
   width: 42px;
   height: 42px;
 
-  border: 1px solid rgba(13, 71, 161, 0.12);
+  border: 1px solid rgba(36, 66, 122, 0.12);
 
   border-radius: 50%;
 
-  background: rgba(255, 255, 255, 0.90);
+  background: rgba(255, 253, 248, 0.90);
 
   color: var(--navy);
 
@@ -2699,7 +2563,7 @@ button {
 
 .services-page-close:hover {
   background: var(--red);
-  color: white;
+  color: var(--white);
   transform: rotate(90deg);
 }
 
@@ -2776,8 +2640,8 @@ button {
 
   width: 100%;
 
-  border-top: 1px solid rgba(13, 71, 161, 0.12);
-  border-bottom: 1px solid rgba(13, 71, 161, 0.12);
+  border-top: 1px solid rgba(36, 66, 122, 0.12);
+  border-bottom: 1px solid rgba(36, 66, 122, 0.12);
 }
 
 
@@ -2801,11 +2665,11 @@ button {
 
   gap: 15px;
 
-  background: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 253, 248, 0.42);
 
   border: none;
 
-  border-right: 1px solid rgba(13, 71, 161, 0.12);
+  border-right: 1px solid rgba(36, 66, 122, 0.12);
 
   border-radius: 0;
 
@@ -2824,12 +2688,12 @@ button {
 }
 
 .service-page-card:hover {
-  background: white;
+  background: var(--white);
 
   transform: translateY(-5px);
 
   box-shadow:
-    0 15px 35px rgba(13, 71, 161, 0.08);
+    0 15px 35px rgba(36, 66, 122, 0.08);
 }
 
 .service-page-card::after {
@@ -2843,12 +2707,7 @@ button {
 
   height: 3px;
 
-  background:
-    linear-gradient(
-      90deg,
-      var(--blue),
-      var(--red)
-    );
+  background: var(--red);
 
   transform: scaleX(0);
 
@@ -2914,7 +2773,7 @@ button {
 
   padding-top: 38px;
 
-  border-top: 1px solid rgba(13, 71, 161, 0.12);
+  border-top: 1px solid rgba(36, 66, 122, 0.12);
 }
 
 .why-kedar-header {
@@ -2952,8 +2811,8 @@ button {
 
   gap: 0;
 
-  border-top: 1px solid rgba(13, 71, 161, 0.12);
-  border-bottom: 1px solid rgba(13, 71, 161, 0.12);
+  border-top: 1px solid rgba(36, 66, 122, 0.12);
+  border-bottom: 1px solid rgba(36, 66, 122, 0.12);
 }
 
 
@@ -2980,11 +2839,11 @@ button {
 
   border: none;
 
-  border-right: 1px solid rgba(13, 71, 161, 0.12);
+  border-right: 1px solid rgba(36, 66, 122, 0.12);
 
   border-radius: 0;
 
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 253, 248, 0.35);
 
   transition:
     background 0.3s ease,
@@ -3001,12 +2860,12 @@ button {
 }
 
 .why-kedar-card:hover {
-  background: white;
+  background: var(--white);
 
   transform: translateY(-4px);
 
   box-shadow:
-    0 15px 35px rgba(13, 71, 161, 0.08);
+    0 15px 35px rgba(36, 66, 122, 0.08);
 }
 
 
@@ -3031,7 +2890,7 @@ button {
 
   color: var(--blue);
 
-  border: 1px solid rgba(23, 105, 224, 0.08);
+  border: 1px solid rgba(47, 82, 144, 0.08);
 
   font-size: 14px;
 
@@ -3044,7 +2903,7 @@ button {
 .why-kedar-card:hover .why-kedar-icon {
   background: var(--red);
 
-  color: white;
+  color: var(--white);
 
   transform: scale(1.05);
 }
@@ -3107,7 +2966,7 @@ button {
 
   .service-page-card:nth-child(3),
   .service-page-card:nth-child(4) {
-    border-top: 1px solid rgba(13, 71, 161, 0.12);
+    border-top: 1px solid rgba(36, 66, 122, 0.12);
   }
 
   .why-kedar-grid {
@@ -3120,7 +2979,7 @@ button {
 
   .why-kedar-card:nth-child(3),
   .why-kedar-card:nth-child(4) {
-    border-top: 1px solid rgba(13, 71, 161, 0.12);
+    border-top: 1px solid rgba(36, 66, 122, 0.12);
   }
 
   .tyre-results-grid {
@@ -3463,7 +3322,7 @@ button {
   .service-page-card:nth-child(6),
   .service-page-card:nth-child(7),
   .service-page-card:nth-child(8) {
-    border-top: 1px solid rgba(13, 71, 161, 0.12);
+    border-top: 1px solid rgba(36, 66, 122, 0.12);
   }
 
   .why-kedar {
@@ -3679,7 +3538,7 @@ button {
 
     border-right: none;
 
-    border-top: 1px solid rgba(13, 71, 161, 0.12);
+    border-top: 1px solid rgba(36, 66, 122, 0.12);
   }
 
   .service-page-card:first-child {
@@ -3707,7 +3566,7 @@ button {
 
     border-right: none;
 
-    border-top: 1px solid rgba(13, 71, 161, 0.12);
+    border-top: 1px solid rgba(36, 66, 122, 0.12);
   }
 
   .why-kedar-card:first-child {
@@ -3738,20 +3597,9 @@ button {
   z-index: 5000;
   overflow-y: auto;
 
-  background:
-    radial-gradient(
-      circle at 85% 10%,
-      rgba(30, 91, 180, 0.09),
-      transparent 35%
-    ),
-    linear-gradient(
-      135deg,
-      #f7faff 0%,
-      #ffffff 55%,
-      #f3f7fc 100%
-    );
+  background: var(--white);
 
-  color: #102a43;
+  color: #0F1F3D;
 }
 
 
@@ -3766,7 +3614,7 @@ button {
 
   border-radius: 50%;
 
-  background: rgba(29, 78, 216, 0.08);
+  background: rgba(47, 82, 144, 0.08);
 
   filter: blur(10px);
 
@@ -3785,15 +3633,15 @@ button {
   width: 46px;
   height: 46px;
 
-  border: 1px solid rgba(30, 64, 175, 0.12);
+  border: 1px solid rgba(47, 82, 144, 0.12);
 
   border-radius: 50%;
 
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 253, 248, 0.75);
 
   backdrop-filter: blur(14px);
 
-  color: #102a43;
+  color: #0F1F3D;
 
   font-size: 27px;
 
@@ -3811,9 +3659,9 @@ button {
 .product-page-close:hover {
   transform: rotate(90deg);
 
-  background: #d71920;
+  background: #A61C2E;
 
-  color: white;
+  color: var(--white);
 }
 
 
@@ -3855,7 +3703,7 @@ button {
 
   letter-spacing: -2px;
 
-  color: #0b2d52;
+  color: #16305A;
 }
 
 
@@ -3864,7 +3712,7 @@ button {
 
   margin: 0;
 
-  color: #61758a;
+  color: #6B6558;
 
   font-size: 16px;
 
@@ -3881,13 +3729,13 @@ button {
 
   border-radius: 999px;
 
-  border: 1px solid rgba(21, 74, 143, 0.15);
+  border: 1px solid rgba(36, 66, 122, 0.15);
 
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 253, 248, 0.72);
 
   backdrop-filter: blur(12px);
 
-  color: #174a8b;
+  color: #24427A;
 
   font-weight: 600;
 
@@ -3898,9 +3746,9 @@ button {
 
 
 .product-back-button:hover {
-  background: #124d91;
+  background: #24427A;
 
-  color: white;
+  color: var(--white);
 
   transform: translateX(-4px);
 }
@@ -3921,14 +3769,14 @@ button {
 
   border-radius: 16px;
 
-  border: 1px solid rgba(20, 72, 130, 0.10);
+  border: 1px solid rgba(28, 55, 102, 0.10);
 
-  background: rgba(255, 255, 255, 0.68);
+  background: rgba(255, 253, 248, 0.68);
 
   backdrop-filter: blur(16px);
 
   box-shadow:
-    0 10px 30px rgba(24, 61, 100, 0.05);
+    0 10px 30px rgba(28, 55, 102, 0.05);
 }
 
 
@@ -3943,7 +3791,7 @@ button {
 
   font-weight: 600;
 
-  color: #174a8b;
+  color: #24427A;
 }
 
 
@@ -3953,17 +3801,17 @@ button {
 
   border-radius: 50%;
 
-  background: #d71920;
+  background: #A61C2E;
 
   box-shadow:
-    0 0 0 5px rgba(215, 25, 32, 0.08);
+    0 0 0 5px rgba(166, 28, 46, 0.08);
 }
 
 
 .product-filter-label {
   font-size: 13px;
 
-  color: #788b9f;
+  color: #6B6558;
 }
 
 
@@ -3986,17 +3834,12 @@ button {
 
   border-radius: 22px;
 
-  border: 1px solid rgba(26, 76, 135, 0.10);
+  border: 1px solid rgba(36, 66, 122, 0.10);
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.96),
-      rgba(246, 250, 255, 0.88)
-    );
+  background: var(--white);
 
   box-shadow:
-    0 12px 35px rgba(22, 57, 92, 0.07);
+    0 12px 35px rgba(22, 48, 90, 0.07);
 
   transition:
     transform 0.3s ease,
@@ -4009,10 +3852,10 @@ button {
   transform: translateY(-8px);
 
   border-color:
-    rgba(25, 88, 170, 0.25);
+    rgba(36, 66, 122, 0.25);
 
   box-shadow:
-    0 22px 55px rgba(20, 67, 115, 0.13);
+    0 22px 55px rgba(28, 55, 102, 0.13);
 }
 
 
@@ -4031,12 +3874,7 @@ button {
 
   overflow: hidden;
 
-  background:
-    radial-gradient(
-      circle,
-      #ffffff 0%,
-      #eef4fb 75%
-    );
+  background: var(--white);
 }
 
 
@@ -4050,7 +3888,7 @@ button {
 
   border-radius: 50%;
 
-  border: 1px solid rgba(25, 82, 150, 0.08);
+  border: 1px solid rgba(36, 66, 122, 0.08);
 
   pointer-events: none;
 }
@@ -4092,9 +3930,9 @@ button {
 
   border-radius: 7px;
 
-  background: #124d91;
+  background: #24427A;
 
-  color: white;
+  color: var(--white);
 
   font-size: 10px;
 
@@ -4121,13 +3959,13 @@ button {
 
   border-radius: 50%;
 
-  border: 1px solid rgba(20, 60, 110, 0.10);
+  border: 1px solid rgba(28, 55, 102, 0.10);
 
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 253, 248, 0.75);
 
   backdrop-filter: blur(10px);
 
-  color: #174a8b;
+  color: #24427A;
 
   font-size: 20px;
 
@@ -4138,11 +3976,11 @@ button {
 
 
 .product-heart:hover {
-  background: #d71920;
+  background: #A61C2E;
 
-  color: white;
+  color: var(--white);
 
-  border-color: #d71920;
+  border-color: #A61C2E;
 
   transform: scale(1.08);
 }
@@ -4158,7 +3996,7 @@ button {
 .product-page-brand {
   margin: 0 0 4px;
 
-  color: #d71920;
+  color: #A61C2E;
 
   font-size: 11px;
 
@@ -4173,7 +4011,7 @@ button {
 .product-page-info h2 {
   margin: 0 0 13px;
 
-  color: #102f52;
+  color: #16305A;
 
   font-size: 25px;
 
@@ -4199,9 +4037,9 @@ button {
 
   border-radius: 7px;
 
-  background: #edf4fc;
+  background: #F4EFE3;
 
-  color: #174a8b;
+  color: #24427A;
 
   font-size: 11px;
 
@@ -4214,7 +4052,7 @@ button {
 
   margin: 0 0 20px;
 
-  color: #708398;
+  color: #6B6558;
 
   font-size: 13px;
 
@@ -4239,9 +4077,9 @@ button {
 
   border-radius: 11px;
 
-  background: #124d91;
+  background: #24427A;
 
-  color: white;
+  color: var(--white);
 
   font-size: 12px;
 
@@ -4264,12 +4102,12 @@ button {
 
 
 .product-enquire-button:hover {
-  background: #d71920;
+  background: #A61C2E;
 
   transform: translateY(-2px);
 
   box-shadow:
-    0 8px 20px rgba(215, 25, 32, 0.18);
+    0 8px 20px rgba(166, 28, 46, 0.18);
 }
 
 
@@ -4291,14 +4129,14 @@ button {
 
   margin-top: 45px;
 
-  color: #77899b;
+  color: #6B6558;
 
   font-size: 13px;
 }
 
 
 .product-page-note > span {
-  color: #d71920;
+  color: #A61C2E;
 }
 
 
@@ -4307,7 +4145,7 @@ button {
 
   background: none;
 
-  color: #174a8b;
+  color: #24427A;
 
   font-weight: 700;
 
@@ -4316,7 +4154,7 @@ button {
 
 
 .product-page-note button:hover {
-  color: #d71920;
+  color: #A61C2E;
 
   text-decoration: underline;
 }
@@ -4421,15 +4259,6 @@ button {
 
 
 /* =====================================================
-   TYRE RESULTS — PREVENT DOUBLE SCROLLBAR
-===================================================== */
-
-body:has(.tyre-results-page) {
-  overflow: hidden;
-}
-
-
-/* =====================================================
    TYRE DETAIL POPUP — STEP 7
 ===================================================== */
 
@@ -4444,7 +4273,7 @@ body:has(.tyre-results-page) {
 
   padding: 30px;
 
-  background: rgba(7, 26, 61, 0.58);
+  background: rgba(15, 31, 61, 0.58);
 
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -4463,23 +4292,13 @@ body:has(.tyre-results-page) {
 
   overflow: auto;
 
-  border: 1px solid rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 253, 248, 0.65);
   border-radius: 28px;
 
-  background:
-    radial-gradient(
-      circle at 15% 10%,
-      rgba(23, 105, 224, 0.12),
-      transparent 35%
-    ),
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.98),
-      rgba(246, 250, 255, 0.96)
-    );
+  background: var(--white);
 
   box-shadow:
-    0 35px 100px rgba(7, 26, 61, 0.35);
+    0 35px 100px rgba(15, 31, 61, 0.35);
 
   animation: tyrePopupSlideIn 0.28s ease;
 }
@@ -4497,10 +4316,10 @@ body:has(.tyre-results-page) {
   align-items: center;
   justify-content: center;
 
-  border: 1px solid rgba(13, 71, 161, 0.12);
+  border: 1px solid rgba(36, 66, 122, 0.12);
   border-radius: 50%;
 
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 253, 248, 0.88);
   color: var(--navy);
 
   font-size: 25px;
@@ -4518,25 +4337,16 @@ body:has(.tyre-results-page) {
   transform: rotate(90deg);
 
   background: var(--red);
-  color: white;
+  color: var(--white);
 }
 
 .tyre-detail-image {
-  min-height: 470px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 55px;
-
-  background:
-    radial-gradient(
-      circle,
-      rgba(23, 105, 224, 0.10),
-      transparent 62%
-    ),
-    #f4f8fd;
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  background: #FAF7EF;
 }
 
 .tyre-detail-tyre {
@@ -4575,7 +4385,7 @@ body:has(.tyre-results-page) {
 
   margin: 0 0 22px;
 
-  color: #23834a;
+  color: #2F6B44;
 
   font-size: 14px;
   font-weight: 800;
@@ -4589,8 +4399,8 @@ body:has(.tyre-results-page) {
 
   border-radius: 50%;
 
-  background: #23834a;
-  box-shadow: 0 0 0 5px rgba(35, 131, 74, 0.10);
+  background: #2F6B44;
+  box-shadow: 0 0 0 5px rgba(47, 107, 68, 0.10);
 }
 
 .tyre-detail-description {
@@ -4613,13 +4423,9 @@ body:has(.tyre-results-page) {
   border: none;
   border-radius: 12px;
 
-  background: linear-gradient(
-    100deg,
-    var(--blue),
-    #1454aa
-  );
+  background: var(--navy);
 
-  color: white;
+  color: var(--white);
 
   font-size: 13px;
   font-weight: 900;
@@ -4628,8 +4434,8 @@ body:has(.tyre-results-page) {
   cursor: pointer;
 
   box-shadow:
-    0 0 0 rgba(23, 105, 224, 0),
-    0 14px 30px rgba(23, 105, 224, 0.22);
+    0 0 0 rgba(47, 82, 144, 0),
+    0 14px 30px rgba(47, 82, 144, 0.22);
 
   transition:
     transform 0.25s ease,
@@ -4640,15 +4446,11 @@ body:has(.tyre-results-page) {
 .tyre-contact-glow:hover {
   transform: translateY(-3px);
 
-  background: linear-gradient(
-    100deg,
-    var(--red),
-    #b9141b
-  );
+  background: var(--red-dark);
 
   box-shadow:
-    0 0 28px rgba(215, 25, 32, 0.28),
-    0 18px 38px rgba(215, 25, 32, 0.22);
+    0 0 28px rgba(166, 28, 46, 0.28),
+    0 18px 38px rgba(166, 28, 46, 0.22);
 }
 
 @keyframes tyrePopupFadeIn {
@@ -4731,7 +4533,7 @@ body:has(.tyre-results-page) {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 1.4px;
-  color: #64748b;
+  color: #6B6558;
 }
 
 .vehicle-field select {
@@ -4739,11 +4541,11 @@ body:has(.tyre-results-page) {
   height: 58px;
   padding: 0 48px 0 18px;
 
-  border: 1px solid rgba(15, 47, 87, 0.14);
+  border: 1px solid rgba(22, 48, 90, 0.14);
   border-radius: 14px;
 
-  background: rgba(255, 255, 255, 0.9);
-  color: #0f2f57;
+  background: rgba(255, 253, 248, 0.9);
+  color: #16305A;
 
   font-size: 15px;
   font-weight: 600;
@@ -4754,8 +4556,8 @@ body:has(.tyre-results-page) {
   appearance: none;
 
   background-image:
-    linear-gradient(45deg, transparent 50%, #0f2f57 50%),
-    linear-gradient(135deg, #0f2f57 50%, transparent 50%);
+    linear-gradient(45deg, transparent 50%, #16305A 50%),
+    linear-gradient(135deg, #16305A 50%, transparent 50%);
   background-position:
     calc(100% - 20px) 25px,
     calc(100% - 14px) 25px;
@@ -4771,18 +4573,18 @@ body:has(.tyre-results-page) {
 }
 
 .vehicle-field select:hover:not(:disabled) {
-  border-color: rgba(15, 47, 87, 0.3);
+  border-color: rgba(22, 48, 90, 0.3);
 }
 
 .vehicle-field select:focus {
-  border-color: #0f2f57;
-  box-shadow: 0 0 0 4px rgba(15, 47, 87, 0.08);
+  border-color: #16305A;
+  box-shadow: 0 0 0 4px rgba(22, 48, 90, 0.08);
 }
 
 .vehicle-field select:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  background-color: #f4f6f9;
+  background-color: #F4EFE3;
 }
 
 
@@ -4796,8 +4598,8 @@ body:has(.tyre-results-page) {
   border: none;
   border-radius: 14px;
 
-  background: #0f2f57;
-  color: white;
+  background: #16305A;
+  color: var(--white);
 
   font-size: 12px;
   font-weight: 800;
@@ -4810,7 +4612,7 @@ body:has(.tyre-results-page) {
 
   cursor: pointer;
 
-  box-shadow: 0 10px 25px rgba(15, 47, 87, 0.18);
+  box-shadow: 0 10px 25px rgba(22, 48, 90, 0.18);
 
   transition:
     transform 0.25s ease,
@@ -4824,9 +4626,9 @@ body:has(.tyre-results-page) {
 }
 
 .vehicle-search-button:hover:not(:disabled) {
-  background: #123c70;
+  background: #1C3766;
   transform: translateY(-2px);
-  box-shadow: 0 14px 30px rgba(15, 47, 87, 0.25);
+  box-shadow: 0 14px 30px rgba(22, 48, 90, 0.25);
 }
 
 .vehicle-search-button:hover:not(:disabled) span {
@@ -4872,13 +4674,7 @@ body:has(.tyre-results-page) {
 
   overflow-y: auto;
 
-  background:
-    radial-gradient(
-      circle at 15% 10%,
-      rgba(23, 105, 224, 0.08),
-      transparent 32%
-    ),
-    #f7f9fc;
+  background: #FAF7EF;
 }
 
 .vehicle-compatible-grid {
@@ -4889,12 +4685,12 @@ body:has(.tyre-results-page) {
 }
 
 .vehicle-compatible-card {
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(15, 47, 87, 0.1);
+  background: rgba(255, 253, 248, 0.92);
+  border: 1px solid rgba(22, 48, 90, 0.1);
   border-radius: 20px;
   padding: 25px;
 
-  box-shadow: 0 12px 35px rgba(15, 47, 87, 0.08);
+  box-shadow: 0 12px 35px rgba(22, 48, 90, 0.08);
 
   transition:
     transform 0.25s ease,
@@ -4903,7 +4699,7 @@ body:has(.tyre-results-page) {
 
 .vehicle-compatible-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 18px 40px rgba(15, 47, 87, 0.14);
+  box-shadow: 0 18px 40px rgba(22, 48, 90, 0.14);
 }
 
 .vehicle-compatible-header {
@@ -4915,7 +4711,7 @@ body:has(.tyre-results-page) {
 
 .vehicle-compatible-header h2 {
   margin: 4px 0 0;
-  color: #0f2f57;
+  color: #16305A;
   font-size: 24px;
 }
 
@@ -4929,8 +4725,8 @@ body:has(.tyre-results-page) {
 .vehicle-size-box {
   padding: 16px;
   border-radius: 14px;
-  background: #f3f6fa;
-  border: 1px solid rgba(15, 47, 87, 0.08);
+  background: #F4EFE3;
+  border: 1px solid rgba(22, 48, 90, 0.08);
 }
 
 .vehicle-size-box span {
@@ -4938,13 +4734,13 @@ body:has(.tyre-results-page) {
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 1px;
-  color: #e63946;
+  color: #C22638;
   margin-bottom: 7px;
 }
 
 .vehicle-size-box strong {
   display: block;
-  color: #0f2f57;
+  color: #16305A;
   font-size: 17px;
 }
 
@@ -4972,13 +4768,7 @@ body:has(.tyre-results-page) {
   min-height: 100vh;
   overflow-y: auto;
 
-  background:
-    radial-gradient(
-      circle at 10% 5%,
-      rgba(23, 105, 224, 0.08),
-      transparent 30%
-    ),
-    #f7f9fc;
+  background: #FAF7EF;
 
   padding: 45px 6% 80px;
 }
@@ -4999,11 +4789,11 @@ body:has(.tyre-results-page) {
   width: 48px;
   height: 48px;
 
-  border: 1px solid rgba(15, 47, 87, 0.12);
+  border: 1px solid rgba(22, 48, 90, 0.12);
   border-radius: 50%;
 
-  background: white;
-  color: #0f2f57;
+  background: var(--white);
+  color: #16305A;
 
   font-size: 22px;
 
@@ -5014,14 +4804,14 @@ body:has(.tyre-results-page) {
 
 .catalogue-back-button:hover {
   transform: translateX(-4px);
-  background: #0f2f57;
-  color: white;
+  background: #16305A;
+  color: var(--white);
 }
 
 .tyre-catalogue-header h1 {
   margin: 4px 0 8px;
 
-  color: #0f2f57;
+  color: #16305A;
 
   font-size: clamp(38px, 5vw, 64px);
   line-height: 1;
@@ -5030,7 +4820,7 @@ body:has(.tyre-results-page) {
 .tyre-catalogue-header p:last-child {
   margin: 0;
 
-  color: #64748b;
+  color: #6B6558;
 }
 
 
@@ -5054,14 +4844,14 @@ body:has(.tyre-results-page) {
 .catalogue-tyre-card {
   overflow: hidden;
 
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 253, 248, 0.94);
 
-  border: 1px solid rgba(15, 47, 87, 0.1);
+  border: 1px solid rgba(22, 48, 90, 0.1);
 
   border-radius: 22px;
 
   box-shadow:
-    0 12px 35px rgba(15, 47, 87, 0.08);
+    0 12px 35px rgba(22, 48, 90, 0.08);
 
   cursor: pointer;
 
@@ -5074,7 +4864,7 @@ body:has(.tyre-results-page) {
   transform: translateY(-7px);
 
   box-shadow:
-    0 20px 45px rgba(15, 47, 87, 0.15);
+    0 20px 45px rgba(22, 48, 90, 0.15);
 }
 
 
@@ -5087,7 +4877,7 @@ body:has(.tyre-results-page) {
   align-items: center;
   justify-content: center;
 
-  background: #f1f5f9;
+  background: #F4EFE3;
 
   overflow: hidden;
 }
@@ -5116,7 +4906,7 @@ body:has(.tyre-results-page) {
 .catalogue-tyre-label {
   margin: 0 0 7px;
 
-  color: #e63946;
+  color: #C22638;
 
   font-size: 10px;
   font-weight: 800;
@@ -5127,7 +4917,7 @@ body:has(.tyre-results-page) {
 .catalogue-tyre-info h2 {
   margin: 0;
 
-  color: #0f2f57;
+  color: #16305A;
 
   font-size: 24px;
 }
@@ -5135,7 +4925,7 @@ body:has(.tyre-results-page) {
 .catalogue-brand-count {
   margin: 8px 0 15px;
 
-  color: #64748b;
+  color: #6B6558;
 
   font-size: 13px;
 }
@@ -5154,9 +4944,9 @@ body:has(.tyre-results-page) {
 
   border-radius: 8px;
 
-  background: #eef4fa;
+  background: #F4EFE3;
 
-  color: #0f2f57;
+  color: #16305A;
 
   font-size: 11px;
   font-weight: 600;
@@ -5168,7 +4958,7 @@ body:has(.tyre-results-page) {
 .catalogue-card-arrow {
   margin-top: 18px;
 
-  color: #1769e0;
+  color: #2F5290;
 
   font-size: 13px;
   font-weight: 700;
@@ -5204,13 +4994,7 @@ body:has(.tyre-results-page) {
 
   overflow: hidden;
 
-  background:
-    radial-gradient(
-      circle at 50% 40%,
-      rgba(13, 71, 161, 0.06),
-      transparent 45%
-    ),
-    #f7f9fc;
+  background: #FAF7EF;
 }
 
 
@@ -5225,7 +5009,7 @@ body:has(.tyre-results-page) {
 .reviews-heading h2 {
   margin: 10px 0 22px;
 
-  color: #0d47a1;
+  color: #24427A;
 
   font-size: clamp(38px, 5vw, 62px);
 
@@ -5233,7 +5017,7 @@ body:has(.tyre-results-page) {
 }
 
 .reviews-heading h2 span {
-  color: #172b4d;
+  color: #16305A;
 }
 
 
@@ -5249,28 +5033,28 @@ body:has(.tyre-results-page) {
 
   border-radius: 50px;
 
-  background: #ffffff;
+  background: #FFFDF8;
 
-  border: 1px solid rgba(13, 71, 161, 0.1);
+  border: 1px solid rgba(36, 66, 122, 0.1);
 
   box-shadow:
-    0 8px 25px rgba(7, 26, 61, 0.06);
+    0 8px 25px rgba(15, 31, 61, 0.06);
 }
 
 .overall-stars {
-  color: #e63946;
+  color: #C22638;
 
   letter-spacing: 2px;
 }
 
 .reviews-overall-rating strong {
-  color: #0d47a1;
+  color: #24427A;
 
   font-size: 20px;
 }
 
 .rating-label {
-  color: #64748b;
+  color: #6B6558;
 
   font-size: 12px;
 }
@@ -5303,17 +5087,12 @@ body:has(.tyre-results-page) {
 
   border-radius: 26px;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255,255,255,0.98),
-      rgba(245,248,252,0.96)
-    );
+  background: var(--white);
 
-  border: 1px solid rgba(13, 71, 161, 0.11);
+  border: 1px solid rgba(36, 66, 122, 0.11);
 
   box-shadow:
-    0 18px 50px rgba(7, 26, 61, 0.10);
+    0 18px 50px rgba(15, 31, 61, 0.10);
 
   transition:
     transform 0.8s cubic-bezier(.22,.61,.36,1),
@@ -5338,7 +5117,7 @@ body:has(.tyre-results-page) {
   filter: none;
 
   box-shadow:
-    0 25px 65px rgba(13, 71, 161, 0.17);
+    0 25px 65px rgba(36, 66, 122, 0.17);
 }
 
 
@@ -5409,9 +5188,9 @@ body:has(.tyre-results-page) {
 
   border-radius: 50%;
 
-  background: #0d47a1;
+  background: #24427A;
 
-  color: #ffffff;
+  color: #FFFDF8;
 
   font-size: 17px;
   font-weight: 800;
@@ -5420,7 +5199,7 @@ body:has(.tyre-results-page) {
 .review-person h3 {
   margin: 0;
 
-  color: #172b4d;
+  color: #16305A;
 
   font-size: 15px;
 }
@@ -5430,7 +5209,7 @@ body:has(.tyre-results-page) {
 
   margin-top: 3px;
 
-  color: #94a3b8;
+  color: #9C9483;
 
   font-size: 11px;
 }
@@ -5441,7 +5220,7 @@ body:has(.tyre-results-page) {
 .review-stars {
   margin-top: 20px;
 
-  color: #e63946;
+  color: #C22638;
 
   font-size: 17px;
 
@@ -5454,7 +5233,7 @@ body:has(.tyre-results-page) {
 .review-text {
   margin: 18px 0 25px;
 
-  color: #475569;
+  color: #4A4636;
 
   font-size: 14px;
 
@@ -5470,7 +5249,7 @@ body:has(.tyre-results-page) {
 
   gap: 7px;
 
-  color: #94a3b8;
+  color: #9C9483;
 
   font-size: 11px;
 
@@ -5487,14 +5266,14 @@ body:has(.tyre-results-page) {
 
   border-radius: 50%;
 
-  background: #ffffff;
+  background: #FFFDF8;
 
-  color: #4285f4;
+  color: #5B7FB8;
 
   font-weight: 900;
 
   box-shadow:
-    0 2px 7px rgba(0,0,0,0.08);
+    0 2px 7px rgba(15, 31, 61, 0.08);
 }
 
 
@@ -5516,7 +5295,7 @@ body:has(.tyre-results-page) {
 
   border-radius: 50%;
 
-  background: #cbd5e1;
+  background: #D8DEE9;
 
   transition: 0.3s ease;
 }
@@ -5526,7 +5305,7 @@ body:has(.tyre-results-page) {
 
   border-radius: 10px;
 
-  background: #e63946;
+  background: #C22638;
 }
 
 
@@ -5571,14 +5350,9 @@ body:has(.tyre-results-page) {
 .site-footer {
   position: relative;
 
-  background:
-    linear-gradient(
-      135deg,
-      #071a3d 0%,
-      #0d47a1 100%
-    );
+  background: var(--navy);
 
-  color: #ffffff;
+  color: #FFFDF8;
 
   overflow: hidden;
 }
@@ -5599,7 +5373,7 @@ body:has(.tyre-results-page) {
 
   border-radius: 50%;
 
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 253, 248, 0.06);
 
   pointer-events: none;
 }
@@ -5617,7 +5391,7 @@ body:has(.tyre-results-page) {
 
   border-radius: 50%;
 
-  background: rgba(230, 57, 70, 0.08);
+  background: rgba(194, 38, 56, 0.08);
 
   pointer-events: none;
 }
@@ -5666,7 +5440,7 @@ body:has(.tyre-results-page) {
 .footer-brand p {
   margin: 0;
 
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 253, 248, 0.72);
 
   font-size: 14px;
 
@@ -5676,7 +5450,7 @@ body:has(.tyre-results-page) {
 .footer-social-text {
   margin-top: 22px;
 
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 253, 248, 0.45);
 
   font-size: 11px;
 
@@ -5691,7 +5465,7 @@ body:has(.tyre-results-page) {
 .footer-column h3 {
   margin: 5px 0 22px;
 
-  color: #ffffff;
+  color: #FFFDF8;
 
   font-size: 15px;
 
@@ -5716,9 +5490,9 @@ body:has(.tyre-results-page) {
 
   text-decoration: none;
 
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 253, 248, 0.07);
 
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 253, 248, 0.08);
 
   transition: 0.25s ease;
 }
@@ -5726,9 +5500,9 @@ body:has(.tyre-results-page) {
 .footer-action:hover {
   transform: translateX(5px);
 
-  background: rgba(255, 255, 255, 0.13);
+  background: rgba(255, 253, 248, 0.13);
 
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 253, 248, 0.18);
 }
 
 
@@ -5746,9 +5520,9 @@ body:has(.tyre-results-page) {
 
   border-radius: 10px;
 
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 253, 248, 0.1);
 
-  color: #ffffff;
+  color: #FFFDF8;
 
   font-size: 18px;
 }
@@ -5766,7 +5540,7 @@ body:has(.tyre-results-page) {
 .footer-action strong {
   display: block;
 
-  color: #ffffff;
+  color: #FFFDF8;
 
   font-size: 13px;
 }
@@ -5776,7 +5550,7 @@ body:has(.tyre-results-page) {
 
   margin-top: 3px;
 
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 253, 248, 0.55);
 
   font-size: 11px;
 }
@@ -5798,9 +5572,9 @@ body:has(.tyre-results-page) {
 
   border-radius: 12px;
 
-  background: #ffffff;
+  background: #FFFDF8;
 
-  color: #0d47a1;
+  color: #24427A;
 
   text-decoration: none;
 
@@ -5821,7 +5595,7 @@ body:has(.tyre-results-page) {
   transform: translateY(-3px);
 
   box-shadow:
-    0 10px 25px rgba(0, 0, 0, 0.18);
+    0 10px 25px rgba(15, 31, 61, 0.18);
 }
 
 .footer-store-button:hover span {
@@ -5849,7 +5623,7 @@ body:has(.tyre-results-page) {
 
   border-radius: 10px;
 
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 253, 248, 0.1);
 
   font-size: 19px;
 }
@@ -5857,7 +5631,7 @@ body:has(.tyre-results-page) {
 .footer-hours strong {
   display: block;
 
-  color: #ffffff;
+  color: #FFFDF8;
 
   font-size: 12px;
 }
@@ -5867,7 +5641,7 @@ body:has(.tyre-results-page) {
 
   margin-top: 4px;
 
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 253, 248, 0.6);
 
   font-size: 11px;
 }
@@ -5882,7 +5656,7 @@ body:has(.tyre-results-page) {
 
   margin-bottom: 13px;
 
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 253, 248, 0.65);
 
   text-decoration: none;
 
@@ -5892,7 +5666,7 @@ body:has(.tyre-results-page) {
 }
 
 .footer-links a:hover {
-  color: #ffffff;
+  color: #FFFDF8;
 
   transform: translateX(4px);
 }
@@ -5918,20 +5692,20 @@ body:has(.tyre-results-page) {
   gap: 20px;
 
   border-top:
-    1px solid rgba(255, 255, 255, 0.1);
+    1px solid rgba(255, 253, 248, 0.1);
 }
 
 .footer-bottom p,
 .footer-bottom span {
   margin: 0;
 
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 253, 248, 0.45);
 
   font-size: 11px;
 }
 
 .footer-bottom span {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 253, 248, 0.6);
 }
 
 
@@ -6006,8 +5780,8 @@ html {
   z-index: 3;
   padding: 10px 12px;
   border-radius: 12px;
-  background: rgba(255,255,255,.94);
-  box-shadow: 0 8px 22px rgba(7,26,61,.12);
+  background: rgba(255, 253, 248, .94);
+  box-shadow: 0 8px 22px rgba(15, 31, 61, .12);
 }
 
 .home-tyre-info strong,
@@ -6022,7 +5796,7 @@ html {
 
 .home-tyre-info span {
   margin-top: 3px;
-  color: #60708d;
+  color: #6B6558;
   font-size: 11px;
 }
 
@@ -6036,10 +5810,10 @@ html {
   margin: 80px auto;
   padding: 60px 30px;
   text-align: center;
-  border: 1px solid rgba(13,71,161,.1);
+  border: 1px solid rgba(36, 66, 122, .1);
   border-radius: 24px;
-  background: #fff;
-  box-shadow: 0 18px 50px rgba(7,26,61,.08);
+  background: #FFFDF8;
+  box-shadow: 0 18px 50px rgba(15, 31, 61, .08);
 }
 
 .favourites-empty-icon {
@@ -6054,7 +5828,7 @@ html {
 }
 
 .favourites-empty p {
-  color: #66758f;
+  color: #6B6558;
   margin-bottom: 24px;
 }
 
@@ -6067,7 +5841,7 @@ html {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(7,26,61,.62);
+  background: rgba(15, 31, 61, .62);
   backdrop-filter: blur(12px);
 }
 
@@ -6076,8 +5850,8 @@ html {
   width: min(460px, 100%);
   padding: 38px;
   border-radius: 26px;
-  background: #fff;
-  box-shadow: 0 30px 90px rgba(0,0,0,.25);
+  background: #FFFDF8;
+  box-shadow: 0 30px 90px rgba(15, 31, 61, .25);
 }
 
 .login-modal h2 {
@@ -6088,7 +5862,7 @@ html {
 
 .login-subtitle {
   margin: 0 0 22px;
-  color: #65748e;
+  color: #6B6558;
 }
 
 .login-modal input,
@@ -6097,17 +5871,17 @@ html {
   box-sizing: border-box;
   margin: 7px 0;
   padding: 14px 15px;
-  border: 1px solid #d8e1ef;
+  border: 1px solid #ECE1CB;
   border-radius: 12px;
   outline: none;
   color: var(--navy);
-  background: #f8fbff;
+  background: #FAF7EF;
 }
 
 .login-modal input:focus,
 .admin-add-form input:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(13,71,161,.08);
+  box-shadow: 0 0 0 3px rgba(36, 66, 122, .08);
 }
 
 .login-close {
@@ -6118,7 +5892,7 @@ html {
   height: 38px;
   border: 0;
   border-radius: 50%;
-  background: #f0f4fa;
+  background: #F4EFE3;
   color: var(--navy);
   font-size: 25px;
   cursor: pointer;
@@ -6131,7 +5905,7 @@ html {
   border: 0;
   border-radius: 12px;
   background: var(--blue);
-  color: #fff;
+  color: #FFFDF8;
   font-weight: 700;
   cursor: pointer;
   transition: .2s ease;
@@ -6160,7 +5934,7 @@ html {
 
 .admin-success {
   margin: 14px 0;
-  color: #218739;
+  color: #2F6B44;
   font-weight: 700;
 }
 
@@ -6176,8 +5950,8 @@ html {
   margin: auto;
   padding: 34px;
   border-radius: 26px;
-  background: #fff;
-  box-shadow: 0 30px 100px rgba(0,0,0,.25);
+  background: #FFFDF8;
+  box-shadow: 0 30px 100px rgba(15, 31, 61, .25);
 }
 
 .admin-panel-header {
@@ -6192,7 +5966,7 @@ html {
 }
 
 .admin-panel-header p:not(.section-eyebrow) {
-  color: #66758f;
+  color: #6B6558;
 }
 
 .admin-add-form {
@@ -6226,9 +6000,9 @@ html {
   justify-content: space-between;
   gap: 15px;
   padding: 14px 16px;
-  border: 1px solid #e3eaf4;
+  border: 1px solid #F4EFE3;
   border-radius: 13px;
-  background: #f8fbff;
+  background: #FAF7EF;
 }
 
 .admin-product-row strong,
@@ -6242,7 +6016,7 @@ html {
 
 .admin-product-row span {
   margin-top: 3px;
-  color: #6a7890;
+  color: #6B6558;
   font-size: 12px;
 }
 
@@ -6274,14 +6048,14 @@ html {
   padding: 0;
   border: 0;
   background: transparent;
-  color: rgba(255,255,255,.65);
+  color: rgba(255, 253, 248, .65);
   font-size: 13px;
   cursor: pointer;
   transition: .2s ease;
 }
 
 .footer-link-button:hover {
-  color: #fff;
+  color: #FFFDF8;
   transform: translateX(4px);
 }
 
@@ -6304,4 +6078,2896 @@ html {
   .admin-add-form .login-submit {
     width: 100%;
   }
+}
+
+/* =====================================================
+   TYRE ROAD TRANSITION
+===================================================== */
+
+.tyre-road-transition {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  background:
+    linear-gradient(
+      180deg,
+      #FAF7EF 0%,
+      #F4EFE3 38%,
+      #0F1F3D 39%,
+      #0A1730 100%
+    );
+  display: flex;
+  align-items: flex-end;
+  isolation: isolate;
+  overflow: visible;
+}
+
+.road-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+/* Road */
+
+.road-line {
+  position: absolute;
+  left: 0;
+  bottom: 43px;
+  width: 100%;
+  height: 5px;
+  background: repeating-linear-gradient(
+    90deg,
+    #FFFDF8 0 65px,
+    transparent 65px 125px
+  );
+  opacity: 0.85;
+  z-index: 2;
+}
+
+/* Rolling tyre */
+
+.rolling-tyre {
+  position: absolute;
+  left: -150px;
+  bottom: 18px;
+  width: 110px;
+  height: 110px;
+  animation:
+    tyre-drive 9s linear infinite,
+    tyre-bounce 0.7s ease-in-out infinite;
+  z-index: 5;
+}
+
+.tyre-wheel {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: var(--navy);
+  border: 8px solid #0A1730;
+  box-shadow:
+    inset 0 0 0 5px #4A4636,
+    inset 0 0 0 12px #0A1730,
+    0 13px 25px rgba(15, 31, 61, 0.35);
+  animation: tyre-spin 0.8s linear infinite;
+}
+
+.tyre-sidewall {
+  position: absolute;
+  inset: 17px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #4A4636 0%,
+      #0A1730 48%,
+      #0A1730 100%
+    );
+  box-shadow:
+    inset 0 0 10px rgba(255, 253, 248, 0.08);
+}
+
+.tyre-rim {
+  position: absolute;
+  inset: 20px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      #ECE1CB 0%,
+      #9C9483 45%,
+      #4A4636 70%,
+      #4A4636 100%
+    );
+  border: 4px solid #0A1730;
+  box-shadow:
+    inset 0 0 8px rgba(255, 253, 248, 0.5);
+}
+
+.rim-center {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #16305A;
+  border: 3px solid #ECE1CB;
+  z-index: 3;
+}
+
+.rim-spoke {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 30px;
+  border-radius: 5px;
+  background: #F4EFE3;
+  transform-origin: 50% 100%;
+}
+
+.spoke-1 {
+  transform: translate(-50%, -100%) rotate(0deg);
+}
+
+.spoke-2 {
+  transform: translate(-50%, -100%) rotate(72deg);
+}
+
+.spoke-3 {
+  transform: translate(-50%, -100%) rotate(144deg);
+}
+
+.spoke-4 {
+  transform: translate(-50%, -100%) rotate(216deg);
+}
+
+.spoke-5 {
+  transform: translate(-50%, -100%) rotate(288deg);
+}
+
+/* =====================================================
+   ANIMATION
+===================================================== */
+
+@keyframes tyre-drive {
+  0% {
+    left: -150px;
+  }
+
+  100% {
+    left: calc(100% + 150px);
+  }
+}
+
+@keyframes tyre-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes tyre-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .tyre-road-transition {
+    height: 90px;
+  }
+
+  .rolling-tyre {
+    width: 82px;
+    height: 82px;
+    bottom: 19px;
+  }
+
+  .tyre-wheel {
+    width: 82px;
+    height: 82px;
+    border-width: 6px;
+  }
+
+  .tyre-sidewall {
+    inset: 13px;
+  }
+
+  .tyre-rim {
+    inset: 15px;
+  }
+
+  .rim-spoke {
+    height: 21px;
+    width: 4px;
+  }
+
+  .rim-center {
+    width: 13px;
+    height: 13px;
+  }
+
+  .road-line {
+    bottom: 38px;
+    height: 4px;
+  }
+
+}
+
+.rolling-tyre {
+  position: absolute;
+  left: -150px;
+  bottom: 0;
+  width: 110px;
+  height: 110px;
+  animation:
+    tyre-drive 9s linear infinite,
+    tyre-bounce 0.7s ease-in-out infinite;
+  z-index: 5;
+}
+
+/* =====================================================
+   KEDAR TYRES FOOTER STORY
+===================================================== */
+
+.footer-bottom {
+  position: relative;
+}
+
+.footer-story {
+  position: absolute;
+  left: 0;
+  top: -42px;
+  width: 100%;
+  height: 52px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+
+/* =====================================================
+   ROAD
+===================================================== */
+
+.footer-story-road {
+  position: absolute;
+  left: 0;
+  bottom: 5px;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 253, 248, 0.35);
+}
+
+
+/* =====================================================
+   SMALL TYRE SHOP
+===================================================== */
+
+.footer-shop {
+  position: absolute;
+  left: calc(50% + 18px);
+  bottom: 7px;
+  width: 45px;
+  height: 35px;
+
+  opacity: 0;
+
+  animation: footer-shop-show 14s linear infinite;
+
+  z-index: 2;
+}
+
+.shop-building {
+  position: absolute;
+  left: 3px;
+  bottom: 0;
+  width: 39px;
+  height: 25px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background: #24427A;
+  border: 1px solid rgba(255, 253, 248, 0.7);
+
+  color: var(--white);
+  font-size: 4px;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+}
+
+.shop-roof {
+  position: absolute;
+  left: 0;
+  bottom: 24px;
+
+  width: 45px;
+  height: 7px;
+
+  background: #A61C2E;
+
+  clip-path: polygon(
+    50% 0,
+    100% 100%,
+    0 100%
+  );
+}
+
+.shop-door {
+  position: absolute;
+  left: 6px;
+  bottom: 0;
+
+  width: 7px;
+  height: 13px;
+
+  background: #0A1730;
+}
+
+.shop-window {
+  position: absolute;
+  right: 6px;
+  bottom: 7px;
+
+  width: 12px;
+  height: 9px;
+
+  border: 1px solid white;
+  background: #F4EFE3;
+}
+
+
+/* =====================================================
+   BIKE
+===================================================== */
+
+.story-bike {
+  position: absolute;
+
+  left: -75px;
+  bottom: 7px;
+
+  width: 60px;
+  height: 25px;
+
+  z-index: 5;
+
+  animation: story-bike-drive 14s linear infinite;
+}
+
+.story-bike-body {
+  position: absolute;
+  left: 21px;
+  bottom: 11px;
+
+  width: 19px;
+  height: 5px;
+
+  border-radius: 5px;
+
+  background: #24427A;
+}
+
+.story-bike-frame {
+  position: absolute;
+  left: 14px;
+  bottom: 5px;
+
+  width: 31px;
+  height: 12px;
+
+  border-left: 2px solid #A61C2E;
+  border-bottom: 2px solid #A61C2E;
+
+  transform: skew(-15deg);
+}
+
+.story-bike-seat {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+
+  width: 10px;
+  height: 3px;
+
+  border-radius: 3px;
+
+  background: var(--white);
+}
+
+.story-bike-handle {
+  position: absolute;
+  right: 2px;
+  bottom: 16px;
+
+  width: 7px;
+  height: 7px;
+
+  border-right: 2px solid white;
+  border-top: 2px solid white;
+
+  transform: rotate(15deg);
+}
+
+
+/* =====================================================
+   WHEELS
+===================================================== */
+
+.story-wheel {
+  position: absolute;
+
+  bottom: 0;
+
+  width: 13px;
+  height: 13px;
+
+  border: 2px solid white;
+  border-radius: 50%;
+
+  box-sizing: border-box;
+
+  animation: story-wheel-spin 0.35s linear infinite;
+}
+
+.story-wheel-back {
+  left: 3px;
+}
+
+.story-wheel-front {
+  right: 2px;
+}
+
+.story-wheel::after {
+  content: "";
+
+  position: absolute;
+
+  width: 3px;
+  height: 3px;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  background: var(--white);
+}
+
+
+/* =====================================================
+   CRASH
+===================================================== */
+
+.story-crash {
+  position: absolute;
+
+  left: 50%;
+  bottom: 20px;
+
+  width: 30px;
+  height: 20px;
+
+  transform: translateX(-50%);
+
+  opacity: 0;
+
+  animation: story-crash-effect 14s linear infinite;
+
+  z-index: 8;
+}
+
+.story-crash strong {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  font-size: 12px;
+
+  color: #A61C2E;
+}
+
+.story-crash span {
+  position: absolute;
+
+  font-size: 8px;
+
+  color: #C9A227;
+}
+
+.story-crash span:first-child {
+  left: 2px;
+  top: 0;
+}
+
+.story-crash span:nth-child(2) {
+  right: 2px;
+  bottom: 0;
+}
+
+
+/* =====================================================
+   DETACHED TYRE
+===================================================== */
+
+.story-detached-tyre {
+  position: absolute;
+
+  left: calc(50% - 20px);
+  bottom: 7px;
+
+  width: 13px;
+  height: 13px;
+
+  border-radius: 50%;
+
+  border: 3px solid #0A1730;
+
+  box-shadow:
+    inset 0 0 0 2px #4A4636;
+
+  opacity: 0;
+
+  animation: detached-tyre-action 14s linear infinite;
+
+  z-index: 6;
+}
+
+/* =====================================================
+   PROFESSIONAL CARTOON MECHANIC
+===================================================== */
+
+.story-mechanic {
+  position: absolute;
+
+  left: calc(50% - 2px);
+  bottom: 5px;
+
+  width: 34px;
+  height: 48px;
+
+  opacity: 0;
+
+  animation: mechanic-story 14s linear infinite;
+
+  z-index: 9;
+}
+
+
+/* =====================================================
+   CAP
+===================================================== */
+
+.mechanic-cap {
+  position: absolute;
+
+  left: 9px;
+  top: 0;
+
+  width: 16px;
+  height: 7px;
+
+  background: #24427A;
+
+  border-radius: 9px 9px 3px 3px;
+
+  z-index: 3;
+}
+
+.mechanic-cap::after {
+  content: "";
+
+  position: absolute;
+
+  left: 2px;
+  top: 2px;
+
+  width: 8px;
+  height: 2px;
+
+  border-radius: 2px;
+
+  background: var(--white);
+
+  opacity: 0.9;
+}
+
+.mechanic-cap-bill {
+  position: absolute;
+
+  left: -4px;
+  bottom: -1px;
+
+  width: 9px;
+  height: 3px;
+
+  border-radius: 3px 0 0 3px;
+
+  background: #24427A;
+
+  transform: rotate(-8deg);
+}
+
+
+/* =====================================================
+   HEAD
+===================================================== */
+
+.mechanic-head {
+  position: absolute;
+
+  left: 10px;
+  top: 5px;
+
+  width: 15px;
+  height: 15px;
+
+  border-radius: 50%;
+
+  background: #D8B98A;
+
+  border: 1px solid #B08D57;
+
+  z-index: 2;
+}
+
+
+/* EAR */
+
+.mechanic-ear {
+  position: absolute;
+
+  left: -3px;
+  top: 5px;
+
+  width: 4px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #D8B98A;
+
+  border: 1px solid #B08D57;
+}
+
+
+/* EYE */
+
+.mechanic-eye {
+  position: absolute;
+
+  right: 3px;
+  top: 5px;
+
+  width: 2px;
+  height: 2px;
+
+  border-radius: 50%;
+
+  background: #0F1F3D;
+}
+
+
+/* SMILE */
+
+.mechanic-smile {
+  position: absolute;
+
+  right: 2px;
+  bottom: 3px;
+
+  width: 5px;
+  height: 2px;
+
+  border-bottom: 1px solid #0F1F3D;
+
+  border-radius: 0 0 6px 6px;
+}
+
+
+/* =====================================================
+   NECK
+===================================================== */
+
+.mechanic-neck {
+  position: absolute;
+
+  left: 15px;
+  top: 19px;
+
+  width: 6px;
+  height: 5px;
+
+  background: #D8B98A;
+}
+
+
+/* =====================================================
+   UNIFORM
+===================================================== */
+
+.mechanic-torso {
+  position: absolute;
+
+  left: 8px;
+  top: 22px;
+
+  width: 20px;
+  height: 17px;
+
+  background: #24427A;
+
+  border-radius: 5px 5px 3px 3px;
+
+  border: 1px solid #1C3766;
+
+  z-index: 2;
+}
+
+
+/* COLLAR */
+
+.mechanic-collar-left,
+.mechanic-collar-right {
+  position: absolute;
+
+  top: 1px;
+
+  width: 7px;
+  height: 6px;
+
+  background: var(--white);
+
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    50% 100%
+  );
+}
+
+.mechanic-collar-left {
+  left: 2px;
+}
+
+.mechanic-collar-right {
+  right: 2px;
+}
+
+
+/* POCKET */
+
+.mechanic-pocket {
+  position: absolute;
+
+  right: 2px;
+  top: 8px;
+
+  width: 6px;
+  height: 5px;
+
+  border: 1px solid rgba(255, 253, 248, 0.7);
+
+  font-size: 3px;
+  font-weight: 900;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: var(--white);
+}
+
+/* =====================================================
+   MECHANIC ARMS — ATTACHED PROPERLY
+===================================================== */
+
+.mechanic-arm {
+  position: absolute;
+
+  top: 24px;
+
+  width: 15px;
+  height: 5px;
+
+  border-radius: 5px;
+
+  background: #24427A;
+
+  transform-origin: 3px center;
+
+  z-index: 1;
+}
+
+
+/* LEFT ARM */
+
+.mechanic-arm-left {
+  left: 7px;
+
+  transform-origin: 3px center;
+
+  animation:
+    repair-arm-motion 14s linear infinite;
+}
+
+
+
+/* =====================================================
+   WRENCH
+===================================================== */
+
+.mechanic-wrench {
+  position: absolute;
+
+  left: -11px;
+  top: 28px;
+
+  font-size: 8px;
+
+  transform: rotate(-25deg);
+
+  animation: wrench-action 14s linear infinite;
+
+  z-index: 5;
+}
+
+
+/* =====================================================
+   WAIST
+===================================================== */
+
+.mechanic-waist {
+  position: absolute;
+
+  left: 8px;
+  top: 38px;
+
+  width: 20px;
+  height: 4px;
+
+  background: #0F1F3D;
+
+  border-radius: 2px;
+}
+
+
+/* =====================================================
+   TROUSERS
+===================================================== */
+
+.mechanic-leg {
+  position: absolute;
+
+  top: 41px;
+
+  width: 7px;
+  height: 7px;
+
+  background: #16305A;
+
+  border-radius: 0 0 3px 3px;
+}
+
+.mechanic-leg-left {
+  left: 10px;
+}
+
+.mechanic-leg-right {
+  right: 10px;
+}
+
+
+/* =====================================================
+   BOOTS
+===================================================== */
+
+.mechanic-boot {
+  position: absolute;
+
+  top: 46px;
+
+  width: 10px;
+  height: 4px;
+
+  border-radius: 3px;
+
+  background: #0A1730;
+}
+
+.mechanic-boot-left {
+  left: 7px;
+}
+
+.mechanic-boot-right {
+  right: 7px;
+}
+
+
+/* =====================================================
+   GOODBYE
+===================================================== */
+
+.story-goodbye {
+  position: absolute;
+
+  left: calc(50% - 30px);
+  bottom: 35px;
+
+  font-size: 10px;
+
+  opacity: 0;
+
+  animation: mechanic-goodbye 14s linear infinite;
+
+  z-index: 10;
+}
+
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes story-bike-drive {
+
+  0% {
+    left: -75px;
+    transform: rotate(0deg);
+  }
+
+  22% {
+    left: calc(50% - 35px);
+    transform: rotate(0deg);
+  }
+
+  25% {
+    left: calc(50% - 35px);
+    transform: rotate(-5deg);
+  }
+
+  32% {
+    left: calc(50% - 35px);
+    transform: rotate(-5deg);
+  }
+
+  39% {
+    left: calc(50% - 35px);
+    transform: rotate(0deg);
+  }
+
+  58% {
+    left: calc(50% - 35px);
+  }
+
+  100% {
+    left: calc(100% + 75px);
+    transform: rotate(0deg);
+  }
+}
+
+
+@keyframes story-wheel-spin {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+@keyframes story-crash-effect {
+
+  0%,
+  24% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.5);
+  }
+
+  26% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.2);
+  }
+
+  31% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+
+  35%,
+  100% {
+    opacity: 0;
+  }
+}
+
+
+@keyframes footer-shop-show {
+
+  0%,
+  28% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  32%,
+  72% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  78%,
+  100% {
+    opacity: 0;
+  }
+}
+
+
+@keyframes detached-tyre-action {
+
+  0%,
+  25% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  27% {
+    opacity: 1;
+    transform: translate(-4px, -6px) rotate(45deg);
+  }
+
+  32% {
+    opacity: 1;
+    transform: translate(-9px, 0) rotate(180deg);
+  }
+
+  38% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(360deg);
+  }
+
+  45%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* =====================================================
+   MECHANIC POSITION
+===================================================== */
+
+.story-mechanic {
+  position: absolute;
+
+  left: calc(50% - 2px);
+  bottom: 5px;
+
+  width: 34px;
+  height: 48px;
+
+  opacity: 0;
+
+  z-index: 9;
+
+  animation: mechanic-sequence 14s linear infinite;
+}
+
+
+/* =====================================================
+   FACE
+===================================================== */
+
+.mechanic-eye {
+  position: absolute;
+
+  right: 3px;
+  top: 5px;
+
+  width: 2px;
+  height: 2px;
+
+  border-radius: 50%;
+
+  background: #0F1F3D;
+}
+
+.mechanic-eye-second {
+  right: 7px;
+}
+
+
+/* =====================================================
+   REPAIR ARM
+===================================================== */
+
+.mechanic-arm-left,
+.mechanic-arm-right {
+  top: 24px;
+
+  width: 15px;
+  height: 5px;
+
+  border-radius: 5px;
+
+  background: #24427A;
+
+  transform-origin: 3px center;
+
+  z-index: 1;
+}
+
+.mechanic-arm-left {
+  left: 7px;
+}
+
+.mechanic-arm-right {
+  left: 22px;
+}
+
+
+/* =====================================================
+   WRENCH
+===================================================== */
+
+.mechanic-wrench {
+  animation:
+    wrench-repair 14s linear infinite;
+}
+
+
+/* =====================================================
+   LEGS
+===================================================== */
+
+.mechanic-leg-left,
+.mechanic-leg-right {
+  transform-origin: top center;
+}
+
+
+/* =====================================================
+   MAIN SEQUENCE
+===================================================== */
+
+@keyframes mechanic-sequence {
+
+  /* hidden */
+  0%,
+  28% {
+    opacity: 0;
+    transform:
+      translateY(4px)
+      rotate(0deg);
+  }
+
+  /* arrives */
+  31% {
+    opacity: 1;
+    transform:
+      translateY(0)
+      rotate(0deg);
+  }
+
+  /* sits down */
+  34% {
+    opacity: 1;
+    transform:
+      translateY(7px)
+      rotate(4deg);
+  }
+
+  /* stays seated during repair */
+  35%,
+  55% {
+    opacity: 1;
+    transform:
+      translateY(7px)
+      rotate(4deg);
+  }
+
+  /* stands up */
+  59% {
+    opacity: 1;
+    transform:
+      translateY(0)
+      rotate(0deg);
+  }
+
+  /* looks toward vehicle */
+  62%,
+  73% {
+    opacity: 1;
+    transform:
+      translateX(-2px)
+      translateY(0)
+      rotate(-8deg);
+  }
+
+  /* walks/steps back */
+  76% {
+    opacity: 1;
+    transform:
+      translateX(1px)
+      translateY(0)
+      rotate(0deg);
+  }
+
+  /* disappears */
+  80%,
+  100% {
+    opacity: 0;
+    transform:
+      translateX(3px)
+      translateY(0);
+  }
+}
+
+
+/* =====================================================
+   SITTING REPAIR
+===================================================== */
+
+@keyframes repair-arm-motion {
+
+  0%,
+  32% {
+    transform: rotate(30deg);
+  }
+
+  /* reaches down toward tyre */
+
+  35% {
+    transform: rotate(75deg);
+  }
+
+  /* repair */
+
+  39% {
+    transform: rotate(105deg);
+  }
+
+  43% {
+    transform: rotate(70deg);
+  }
+
+  47% {
+    transform: rotate(105deg);
+  }
+
+  51% {
+    transform: rotate(70deg);
+  }
+
+  55% {
+    transform: rotate(30deg);
+  }
+
+  /* stands */
+
+  59%,
+  100% {
+    transform: rotate(30deg);
+  }
+}
+
+/* =====================================================
+   WRENCH MOVEMENT
+===================================================== */
+
+@keyframes wrench-repair {
+
+  0%,
+  34% {
+    opacity: 0;
+    transform: rotate(0deg);
+  }
+
+  /* wrench appears */
+
+  35% {
+    opacity: 1;
+    transform: rotate(-20deg);
+  }
+
+  /* repairing */
+
+  39% {
+    transform: rotate(30deg);
+  }
+
+  43% {
+    transform: rotate(-20deg);
+  }
+
+  47% {
+    transform: rotate(30deg);
+  }
+
+  51% {
+    transform: rotate(-20deg);
+  }
+
+  /* finished */
+
+  55%,
+  100% {
+    opacity: 0;
+    transform: rotate(0deg);
+  }
+}
+
+/* =====================================================
+   TOOL MOVEMENT
+===================================================== */
+
+@keyframes tool-movement {
+
+  0%,
+  35% {
+    transform: rotate(0deg);
+  }
+
+  40%,
+  53% {
+    transform: rotate(-30deg);
+  }
+
+  56%,
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+
+/* =====================================================
+   WAVE
+===================================================== */
+
+@keyframes mechanic-goodbye {
+
+  0%,
+  58% {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+
+  61% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  64% {
+    opacity: 1;
+    transform: translateY(-2px) rotate(-10deg);
+  }
+
+  67% {
+    opacity: 1;
+    transform: translateY(0) rotate(10deg);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translateY(-2px) rotate(-10deg);
+  }
+
+  74% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+
+  79%,
+  100% {
+    opacity: 0;
+  }
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .footer-story {
+    top: -38px;
+    height: 48px;
+  }
+
+  .story-bike {
+    transform: scale(0.8);
+    transform-origin: center bottom;
+  }
+
+  .story-mechanic {
+    transform: scale(0.8);
+    transform-origin: center bottom;
+  }
+
+  .footer-shop {
+    transform: scale(0.8);
+    transform-origin: center bottom;
+  }
+
+}
+
+/* =====================================================
+   BIKE MOVEMENT
+===================================================== */
+
+@keyframes story-bike-drive {
+
+  0% {
+    left: -75px;
+    transform: rotate(0deg);
+  }
+
+  22% {
+    left: calc(50% - 35px);
+    transform: rotate(0deg);
+  }
+
+  25% {
+    left: calc(50% - 35px);
+    transform: rotate(-5deg);
+  }
+
+  32% {
+    left: calc(50% - 35px);
+    transform: rotate(-5deg);
+  }
+
+  39% {
+    left: calc(50% - 35px);
+    transform: rotate(0deg);
+  }
+
+  58% {
+    left: calc(50% - 35px);
+  }
+
+  100% {
+    left: calc(100% + 75px);
+    transform: rotate(0deg);
+  }
+
+}
+
+
+/* =====================================================
+   WHEEL
+===================================================== */
+
+@keyframes story-wheel-spin {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+/* =====================================================
+   CRASH EFFECT
+===================================================== */
+
+@keyframes story-crash-effect {
+
+  0%,
+  24% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.5);
+  }
+
+  26% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.2);
+  }
+
+  31% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+
+  35%,
+  100% {
+    opacity: 0;
+  }
+
+}
+
+
+/* =====================================================
+   SHOP SIGN
+===================================================== */
+
+@keyframes repair-shop-appear {
+
+  0%,
+  29% {
+    opacity: 0;
+  }
+
+  32%,
+  62% {
+    opacity: 1;
+  }
+
+  68%,
+  100% {
+    opacity: 0;
+  }
+
+}
+
+
+/* =====================================================
+   DETACHED TYRE
+===================================================== */
+
+@keyframes detached-tyre-action {
+
+  0%,
+  25% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  27% {
+    opacity: 1;
+    transform: translate(-4px, -6px) rotate(45deg);
+  }
+
+  32% {
+    opacity: 1;
+    transform: translate(-9px, 0) rotate(180deg);
+  }
+
+  38% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(360deg);
+  }
+
+  45%,
+  100% {
+    opacity: 0;
+  }
+
+}
+
+
+/* =====================================================
+   MECHANIC
+===================================================== */
+
+@keyframes mechanic-story {
+
+  0%,
+  29% {
+    opacity: 0;
+    transform: translateX(15px);
+  }
+
+  33% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  58% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  65%,
+  100% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+
+}
+
+
+/* =====================================================
+   REPAIR ARM
+===================================================== */
+
+@keyframes mechanic-repair-arm {
+
+  0%,
+  35% {
+    transform: rotate(-25deg);
+  }
+
+  40%,
+  52% {
+    transform: rotate(25deg);
+  }
+
+  56%,
+  100% {
+    transform: rotate(-25deg);
+  }
+
+}
+
+
+/* =====================================================
+   GOODBYE WAVE
+===================================================== */
+
+@keyframes mechanic-goodbye {
+
+  0%,
+  58% {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+
+  63% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  66% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+
+  69% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  73%,
+  100% {
+    opacity: 0;
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .footer-story {
+    top: -25px;
+    height: 34px;
+  }
+
+  .story-bike {
+    transform: scale(0.85);
+    transform-origin: center bottom;
+  }
+
+  .story-mechanic {
+    transform: scale(0.85);
+    transform-origin: center bottom;
+  }
+
+  .repair-shop-sign {
+    font-size: 4px;
+  }
+
+}
+
+/* =====================================================
+   BIKE ROUTE
+===================================================== */
+
+@keyframes pit-bike-route {
+
+  0% {
+    left: -75px;
+    transform: translateY(0);
+  }
+
+  20% {
+    left: calc(50% - 40px);
+    transform: translateY(0);
+  }
+
+  27% {
+    left: calc(50% - 40px);
+    transform: translateY(1px);
+  }
+
+  55% {
+    left: calc(50% - 40px);
+    transform: translateY(1px);
+  }
+
+  62% {
+    left: calc(50% - 40px);
+    transform: translateY(0);
+  }
+
+  100% {
+    left: calc(100% + 75px);
+    transform: translateY(0);
+  }
+
+}
+
+
+/* =====================================================
+   WHEEL SPIN
+===================================================== */
+
+@keyframes pit-wheel-spin {
+
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+/* =====================================================
+   MECHANIC APPEARS
+===================================================== */
+
+@keyframes mechanic-pitstop {
+
+  0%,
+  28% {
+    opacity: 0;
+  }
+
+  32%,
+  55% {
+    opacity: 1;
+  }
+
+  60%,
+  100% {
+    opacity: 0;
+  }
+
+}
+
+
+/* =====================================================
+   SPARE TYRE
+===================================================== */
+
+@keyframes spare-tyre-pitstop {
+
+  0%,
+  31% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+
+  36%,
+  48% {
+    opacity: 1;
+    transform: translateX(-5px);
+  }
+
+  52%,
+  100% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .footer-pit-road {
+    top: -20px;
+    height: 28px;
+  }
+
+  .pit-bike {
+    transform: scale(0.85);
+    transform-origin: center bottom;
+  }
+
+  .pit-mechanic {
+    transform: translateX(-50%) scale(0.85);
+    transform-origin: center bottom;
+  }
+
+  .pit-spare-tyre {
+    transform: scale(0.85);
+  }
+
+}
+
+/* =====================================================
+   FINAL MECHANIC RIGHT ARM + HAND
+===================================================== */
+
+.mechanic-arm-right {
+  position: absolute;
+
+  left: 22px;
+  top: 24px;
+
+  width: 15px;
+  height: 5px;
+
+  background: #24427A;
+  border-radius: 5px;
+
+  transform-origin: 3px 50%;
+
+  z-index: 20;
+
+  animation: mechanic-right-wave 14s linear infinite;
+}
+
+
+/* ACTUAL HAND */
+
+.mechanic-arm-right .mechanic-glove {
+  position: absolute;
+
+  left: 12px;
+  top: -2px;
+
+  width: 8px;
+  height: 8px;
+
+  background: #FAF7EF;
+
+  border: 1px solid #E4DCC8;
+
+  border-radius: 50%;
+
+  box-sizing: border-box;
+
+  z-index: 21;
+}
+
+
+/* =====================================================
+   RIGHT ARM WAVE
+===================================================== */
+
+@keyframes mechanic-right-wave {
+
+  /* repairing */
+  0%,
+  55% {
+    transform: rotate(25deg);
+  }
+
+  /* mechanic finishes repair */
+  58% {
+    transform: rotate(5deg);
+  }
+
+  /* raises arm */
+  61% {
+    transform: rotate(-35deg);
+  }
+
+  /* first wave */
+  64% {
+    transform: rotate(-85deg);
+  }
+
+  /* back */
+  67% {
+    transform: rotate(-50deg);
+  }
+
+  /* second wave */
+  70% {
+    transform: rotate(-90deg);
+  }
+
+  /* back */
+  73% {
+    transform: rotate(-50deg);
+  }
+
+  /* lowers arm */
+  77% {
+    transform: rotate(20deg);
+  }
+
+  /* stays normal until scene resets */
+  78%,
+  100% {
+    transform: rotate(25deg);
+  }
+}
+
+.results-close {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+
+  width: 46px;
+  height: 46px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: var(--white);
+  color: #16305A;
+
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  z-index: 100;
+
+  box-shadow: 0 6px 20px rgba(15, 31, 61, 0.12);
+
+  transition: all 0.25s ease;
+}
+
+.results-close:hover {
+  background: #16305A;
+  color: var(--white);
+  transform: rotate(90deg);
+}
+
+/* =========================================================
+   PRODUCT PAGE — SINGLE SCROLLBAR
+   ========================================================= */
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+body:has(.product-page) {
+  overflow: hidden;
+}
+
+.product-page {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   KEDAR AI ASSISTANT
+   ========================================================= */
+
+.kedar-chatbot {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 10000;
+  font-family: inherit;
+}
+
+
+/* FLOATING BUTTON */
+
+.kedar-chat-button {
+  width: 62px;
+  height: 62px;
+
+  border: none;
+  border-radius: 50%;
+  bottom: 90px;
+  position: fixed;
+  right: 20px;
+  background: #A61C2E;
+  color: var(--white);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 28px;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 12px 30px rgba(15, 31, 61, 0.22);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.kedar-chat-button:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 16px 35px rgba(15, 31, 61, 0.28);
+}
+
+
+/* CHAT WINDOW */
+
+.kedar-chat-window {
+  width: 370px;
+  height: 540px;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background: var(--white);
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 20px 60px rgba(15, 31, 61, 0.22);
+
+  border: 1px solid rgba(15, 31, 61, 0.08);
+}
+
+
+/* HEADER */
+
+.kedar-chat-header {
+  min-height: 72px;
+
+  padding: 16px 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #0F1F3D;
+  color: var(--white);
+}
+
+.kedar-chat-header strong {
+  display: block;
+  font-size: 16px;
+}
+
+.kedar-chat-header span {
+  display: block;
+
+  margin-top: 3px;
+
+  font-size: 12px;
+
+  opacity: 0.7;
+}
+
+.kedar-chat-close {
+  width: 34px;
+  height: 34px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: rgba(255, 253, 248, 0.12);
+  color: var(--white);
+
+  font-size: 22px;
+
+  cursor: pointer;
+}
+
+
+/* MESSAGES */
+
+.kedar-chat-messages {
+  flex: 1;
+
+  padding: 18px;
+
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  background: #FAF7EF;
+}
+
+.kedar-chat-message {
+  max-width: 82%;
+
+  padding: 11px 14px;
+
+  border-radius: 15px;
+
+  font-size: 14px;
+  line-height: 1.5;
+
+  white-space: pre-wrap;
+}
+
+.kedar-chat-message.assistant {
+  align-self: flex-start;
+
+  background: var(--white);
+
+  color: #0F1F3D;
+
+  border: 1px solid rgba(15, 31, 61, 0.08);
+
+  border-bottom-left-radius: 5px;
+}
+
+.kedar-chat-message.user {
+  align-self: flex-end;
+
+  background: #A61C2E;
+
+  color: var(--white);
+
+  border-bottom-right-radius: 5px;
+}
+
+
+/* TYPING */
+
+.kedar-chat-typing {
+  display: flex;
+  gap: 4px;
+}
+
+.kedar-chat-typing i {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #9C9483;
+
+  animation: kedarChatTyping 1.2s infinite ease-in-out;
+}
+
+.kedar-chat-typing i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.kedar-chat-typing i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes kedarChatTyping {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+
+  30% {
+    transform: translateY(-4px);
+  }
+}
+
+
+/* INPUT */
+
+.kedar-chat-input-area {
+  display: flex;
+  gap: 8px;
+
+  padding: 12px;
+
+  background: var(--white);
+
+  border-top: 1px solid #F4EFE3;
+}
+
+.kedar-chat-input-area input {
+  flex: 1;
+
+  min-width: 0;
+
+  height: 44px;
+
+  padding: 0 13px;
+
+  border: 1px solid #ECE1CB;
+  border-radius: 12px;
+
+  outline: none;
+
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.kedar-chat-input-area input:focus {
+  border-color: #0F1F3D;
+}
+
+.kedar-chat-input-area button {
+  width: 44px;
+  height: 44px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #A61C2E;
+  color: var(--white);
+
+  cursor: pointer;
+
+  font-size: 18px;
+}
+
+.kedar-chat-input-area button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+  .kedar-chatbot {
+    right: 15px;
+    bottom: 15px;
+  }
+
+  .kedar-chat-window {
+    width: calc(100vw - 30px);
+    height: min(600px, calc(100vh - 100px));
+
+    border-radius: 18px;
+  }
+
+  .kedar-chat-button {
+    width: 58px;
+    height: 58px;
+  }
+}
+
+/* =====================================================
+   TYRE CATALOGUE - NEW LAYOUT
+===================================================== */
+
+.tyre-catalogue-layout {
+  width: min(1500px, 94%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 30% 70%;
+  gap: 32px;
+  align-items: start;
+}
+
+
+/* =====================================================
+   LEFT FINDER PANEL
+===================================================== */
+
+.tyre-finder-panel {
+  position: sticky;
+  top: 30px;
+
+  padding: 34px;
+  border-radius: 24px;
+
+  background: #FFFDF8;
+  border: 1px solid rgba(15, 31, 61, 0.08);
+
+  box-shadow: 0 18px 50px rgba(15, 31, 61, 0.08);
+}
+
+
+.tyre-finder-panel h2 {
+  margin: 8px 0 12px;
+
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.05;
+  letter-spacing: -1.5px;
+}
+
+
+.tyre-finder-description {
+  margin: 0;
+
+  color: #6B6558;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+
+/* =====================================================
+   TOGGLE
+===================================================== */
+
+.tyre-finder-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin: 30px 0;
+}
+
+
+.tyre-finder-toggle-wrapper > span {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+
+  color: #9C9483;
+
+  transition: 0.25s ease;
+}
+
+
+.tyre-finder-toggle-wrapper > span.active {
+  color: #0F1F3D;
+}
+
+
+.tyre-finder-toggle {
+  position: relative;
+
+  width: 54px;
+  height: 30px;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: #0F1F3D;
+
+  cursor: pointer;
+
+  transition: background 0.3s ease;
+}
+
+
+.tyre-finder-toggle-knob {
+  position: absolute;
+
+  top: 4px;
+  left: 4px;
+
+  width: 22px;
+  height: 22px;
+
+  border-radius: 50%;
+
+  background: #FFFDF8;
+
+  transition:
+    transform 0.3s cubic-bezier(.4, 0, .2, 1),
+    box-shadow 0.3s ease;
+
+  box-shadow: 0 2px 8px rgba(15, 31, 61, 0.2);
+}
+
+
+.tyre-finder-toggle.vehicle-mode {
+  background: #0F1F3D;
+}
+
+
+.tyre-finder-toggle.vehicle-mode
+.tyre-finder-toggle-knob {
+  transform: translateX(24px);
+}
+
+
+/* =====================================================
+   FINDER CONTENT
+===================================================== */
+
+.tyre-finder-content {
+  animation: tyreFinderFade 0.3s ease;
+}
+
+
+@keyframes tyreFinderFade {
+
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
+
+.tyre-finder-label {
+  margin: 0 0 8px;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+
+.tyre-finder-help {
+  margin: 0 0 18px;
+
+  color: #9C9483;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+/* =====================================================
+   SIZE INPUT
+===================================================== */
+
+.catalogue-size-input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 15px 16px;
+
+  border: 1px solid #E4DCC8;
+  border-radius: 12px;
+
+  background: #FAF7EF;
+
+  font-size: 15px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.catalogue-size-input:focus {
+  border-color: #0F1F3D;
+
+  box-shadow: 0 0 0 3px rgba(15, 31, 61, 0.06);
+}
+
+
+/* =====================================================
+   VEHICLE FIELDS
+===================================================== */
+
+.catalogue-field-label {
+  display: block;
+
+  margin: 16px 0 7px;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+
+.catalogue-select {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 14px 15px;
+
+  border: 1px solid #E4DCC8;
+  border-radius: 12px;
+
+  background: #FAF7EF;
+
+  font-size: 14px;
+
+  outline: none;
+
+  cursor: pointer;
+}
+
+
+.catalogue-select:focus {
+  border-color: #0F1F3D;
+}
+
+
+.catalogue-select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+
+/* =====================================================
+   FIND BUTTON
+===================================================== */
+
+.catalogue-search-button {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 18px;
+
+  padding: 15px 17px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #0F1F3D;
+  color: #FFFDF8;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.catalogue-search-button:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 10px 25px rgba(15, 31, 61, 0.15);
+}
+
+
+.catalogue-search-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+
+  transform: none;
+  box-shadow: none;
+}
+
+
+.catalogue-search-button span {
+  font-size: 18px;
+}
+
+
+/* =====================================================
+   GUIDE BUTTON
+===================================================== */
+
+.catalogue-guide-button {
+  width: 100%;
+
+  margin-top: 14px;
+
+  padding: 8px 0;
+
+  border: none;
+  background: transparent;
+
+  color: #9C9483;
+
+  font-size: 12px;
+
+  cursor: pointer;
+
+  text-align: left;
+}
+
+
+.catalogue-guide-button span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #0F1F3D;
+
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   RIGHT CONTENT
+===================================================== */
+
+.tyre-catalogue-content {
+  min-width: 0;
+}
+
+
+.catalogue-content-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  margin-bottom: 30px;
+}
+
+
+.catalogue-content-header h1 {
+  margin: 8px 0 14px;
+
+  font-size: clamp(42px, 5vw, 72px);
+  line-height: 0.98;
+  letter-spacing: -3px;
+}
+
+
+.catalogue-content-header h1 span {
+  color: #9C9483;
+}
+
+
+.catalogue-content-header > div > p:last-child {
+  max-width: 600px;
+
+  margin: 0;
+
+  color: #9C9483;
+
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 900px) {
+
+  .tyre-catalogue-layout {
+    grid-template-columns: 1fr;
+    width: min(94%, 700px);
+  }
+
+
+  .tyre-finder-panel {
+    position: relative;
+    top: auto;
+  }
+
+
+  .catalogue-content-header {
+    flex-direction: column;
+  }
+
+
+  .catalogue-content-header h1 {
+    font-size: clamp(38px, 10vw, 58px);
+    letter-spacing: -2px;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .tyre-finder-panel {
+    padding: 24px;
+    border-radius: 20px;
+  }
+
+
+  .tyre-catalogue-layout {
+    gap: 24px;
+  }
+
+
+  .product-filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+}
+
+/* =====================================================
+   NAVBAR — CENTRED LOGO (final, consolidated)
+   Earlier drafts of this navbar (blue navbar, then a
+   centred-logo pass, then a dark "deep ocean" override)
+   have been merged into one definition below.
+===================================================== */
+
+.main-header {
+  position: sticky;
+  top: 0;
+  z-index: 3000;
+
+  height: 76px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 32px;
+
+  background: var(--white);
+
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-section {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 2;
+}
+
+.brand-logo {
+  width: 138px;
+  height: auto;
+
+  display: block;
+  object-fit: contain;
+}
+
+.navbar-actions {
+  margin-left: auto;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  z-index: 3;
+}
+
+.menu-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  padding: 0;
+
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.menu-icon span {
+  display: block;
+
+  width: 19px;
+  height: 1.5px;
+
+  background: var(--navy);
+
+  border-radius: 2px;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.menu-icon:hover {
+  background: var(--off-white);
+  border-color: var(--border);
+}
+
+
+/* =====================================================
+   MENU — LOGIN / LIKED
+===================================================== */
+
+.menu-account-link {
+  display: flex !important;
+
+  align-items: center;
+
+  gap: 12px;
+
+  text-align: left;
+}
+
+.menu-link-icon {
+  width: 22px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--red);
+
+  font-size: 19px;
+  line-height: 1;
+}
+
+.menu-account-link span:last-child {
+  flex: 1;
+}
+
+
+/* -----------------------------------------------------
+   NAVBAR — MOBILE
+----------------------------------------------------- */
+
+@media (max-width: 800px) {
+
+  .main-header {
+    height: 66px;
+
+    padding: 0 20px;
+  }
+
+  .brand-logo {
+    width: 118px;
+  }
+
+}
+
+@media (max-width: 500px) {
+
+  .main-header {
+    height: 60px;
+
+    padding: 0 16px;
+  }
+
+  .brand-logo {
+    width: 104px;
+  }
+
+  .menu-icon {
+    width: 38px;
+    height: 38px;
+  }
+
 }

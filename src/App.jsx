@@ -27,6 +27,72 @@ function App() {
     name: "",
     password: ""
   });
+  const [chatOpen, setChatOpen] = useState(false);
+  const [tyreFinderMode, setTyreFinderMode] = useState("size");
+const [chatInput, setChatInput] = useState("");
+const [chatMessages, setChatMessages] = useState([
+  {
+    role: "assistant",
+    text: "Hi! 👋 I'm Kedar Tyres Assistant. I can help you find tyres, understand tyre sizes, and answer questions about Kedar Tyres."
+  }
+]);
+const [chatLoading, setChatLoading] = useState(false);
+  const sendChatMessage = async () => {
+  const message = chatInput.trim();
+
+  if (!message || chatLoading) return;
+
+  setChatMessages((current) => [
+    ...current,
+    {
+      role: "user",
+      text: message
+    }
+  ]);
+
+  setChatInput("");
+  setChatLoading(true);
+
+  try {
+    const { data, error } = await supabase.functions.invoke(
+      "rapid-action",
+      {
+        body: {
+          message
+        }
+      }
+    );
+
+    if (error) {
+  console.error("Supabase chat error:", error);
+  throw error;
+}
+
+    setChatMessages((current) => [
+      ...current,
+      {
+        role: "assistant",
+        text:
+          data?.reply ||
+          "Sorry, I couldn't come up with a response."
+      }
+    ]);
+  } catch (error) {
+  console.error("FULL CHAT ERROR:", error);
+  console.error("Error message:", error?.message);
+  console.error("Error context:", error?.context);
+
+  setChatMessages((current) => [
+    ...current,
+    {
+      role: "assistant",
+      text: `Chat error: ${error?.message || "Unknown error"}`
+    }
+  ]);
+} finally {
+  setChatLoading(false);
+}
+};
   const [adminMessage, setAdminMessage] = useState("");
   const [loginMessage, setLoginMessage] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
@@ -52,7 +118,10 @@ function App() {
   const [tyreSize, setTyreSize] = useState("");
   const [showTyreResults, setShowTyreResults] = useState(false);
   const [selectedTyre, setSelectedTyre] = useState(null);
-  const [favouriteTyres, setFavouriteTyres] = useState([]);
+  const [favouriteTyres, setFavouriteTyres] = useState(() => {
+  const saved = localStorage.getItem("favouriteTyres");
+  return saved ? JSON.parse(saved) : [];
+});
   // Vehicle search
   const [vehicleBrand, setVehicleBrand] = useState("");
   const [vehicleModel, setVehicleModel] = useState("");
@@ -265,18 +334,20 @@ function App() {
   }
 };
 
-  const toggleFavourite = (tyre, brand) => {
-    const id = `${brand}-${tyre.size}`;
-    setFavouriteTyres((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : [...current, id]
-    );
-  };
+  const toggleFavourite = (id) => {
+  setFavouriteTyres((current) => {
+    const updated = current.includes(id)
+      ? current.filter((item) => item !== id)
+      : [...current, id];
 
-  const isTyreFavourite = (tyre, brand) =>
-    favouriteTyres.includes(`${brand}-${tyre.size}`);
+    localStorage.setItem("favouriteTyres", JSON.stringify(updated));
 
+    return updated;
+  });
+};
+
+const isTyreFavourite = (id) =>
+  favouriteTyres.includes(id);
   const getTyreImage = (tyre, index = 0) =>
     tyre?.image || `/tyre${(index % 4) + 1}.png`;
 
@@ -331,6 +402,61 @@ const vehicleModels = vehicleBrand
       ),
     ]
   : [];
+
+// Build one card for each individual FRONT/REAR size.
+// A slash means multiple sizes in the same position, not FRONT + REAR.
+// Example: "2.75-17/2.75-18" becomes two separate FRONT cards.
+const getVehicleTyrePositions = (vehicle) => {
+  const positions = [];
+
+  const splitSizes = (value) =>
+    String(value || "")
+      .split("/")
+      .map((size) => size.trim())
+      .filter(Boolean);
+
+  splitSizes(vehicle.front).forEach((size) => {
+    if (size.toUpperCase() !== "SAME") {
+      positions.push({
+        position: "FRONT",
+        size,
+      });
+    }
+  });
+
+  splitSizes(vehicle.rear).forEach((size) => {
+    if (size.toUpperCase() !== "SAME") {
+      positions.push({
+        position: "REAR",
+        size,
+      });
+    }
+  });
+
+  return positions;
+};
+
+const catalogueVehicleTyres = vehicleData.flatMap((vehicle, vehicleIndex) => {
+  const positions = getVehicleTyrePositions(vehicle);
+
+  return positions.map((tyre, positionIndex) => {
+    const imageKey =
+      `${vehicle.manufacturer}-${vehicle.model}-${tyre.position}`
+        .trim()
+        .toUpperCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^A-Z0-9-]/g, "");
+
+    return {
+      id: `${vehicle.manufacturer}-${vehicle.model}-${tyre.position}-${vehicleIndex}-${positionIndex}`,
+      manufacturer: vehicle.manufacturer,
+      model: vehicle.model.trim(),
+      position: tyre.position,
+      size: tyre.size,
+      imageKey,
+    };
+  });
+});
 
 const googleReviews = [
   {
@@ -491,71 +617,139 @@ const searchVehicle = () => {
 
   return (
     <div className="app">
-
+      
       {/* =====================================================
-          NAVBAR
-      ===================================================== */}
+    KEDAR AI ASSISTANT
+===================================================== */}
 
-      <header className="main-header">
+<div className="kedar-chatbot">
 
-        <div className="logo-section">
-          <img
-            src={`${import.meta.env.BASE_URL}logo.png`}
-            alt="Kedar Tyres"
-            className="brand-logo"
-          />
+  {/* CHAT WINDOW */}
+  {chatOpen && (
+    <div className="kedar-chat-window">
+
+      <div className="kedar-chat-header">
+        <div>
+          <strong>Kedar Assistant</strong>
+          <span>Tyre & vehicle help</span>
         </div>
 
-        <nav className="navbar-actions">
+        <button
+          className="kedar-chat-close"
+          onClick={() => setChatOpen(false)}
+          aria-label="Close chat"
+        >
+          ×
+        </button>
+      </div>
 
-          {/* Search */}
-          <button
-            className="nav-icon"
-            aria-label="Search"
-            onClick={openSearch}
+
+      <div className="kedar-chat-messages">
+
+        {chatMessages.map((message, index) => (
+          <div
+            key={index}
+            className={`kedar-chat-message ${
+              message.role === "user"
+                ? "user"
+                : "assistant"
+            }`}
           >
-            <svg viewBox="0 0 24 24">
-              <circle cx="11" cy="11" r="6.5" />
-              <line x1="16" y1="16" x2="21" y2="21" />
-            </svg>
-          </button>
+            {message.text}
+          </div>
+        ))}
 
-          {/* Favourite */}
-          <button
-            className="nav-icon"
-            aria-label="Favourites"
-            onClick={() => setShowProductPage("favourites")}
-          >
-            <svg viewBox="0 0 24 24">
-              <path d="M20.8 8.8c0-3-2.1-5.2-5-5.2-1.7 0-3.2.8-4.1 2.1C10.8 4.4 9.3 3.6 7.6 3.6c-2.9 0-5 2.2-5 5.2 0 5.2 5.1 8.3 9.1 11.4 4-3.1 9.1-6.2 9.1-11.4z" />
-            </svg>
-          </button>
+        {chatLoading && (
+          <div className="kedar-chat-message assistant">
+            <span className="kedar-chat-typing">
+              <i></i>
+              <i></i>
+              <i></i>
+            </span>
+          </div>
+        )}
 
-          {/* Account */}
-          <button
-            className="nav-icon"
-            aria-label="Account"
-            onClick={() => setShowCustomerLogin(true)}
-          >
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="8" r="3.5" />
-              <path d="M5 20c.7-3.5 3.1-5.5 7-5.5s6.3 2 7 5.5" />
-            </svg>
-          </button>
+      </div>
 
-          {/* Menu */}
-          <button
-  className="nav-icon menu-icon"
-  onClick={() => setMenuOpen(prev => !prev)}
-  aria-label={menuOpen ? "Close menu" : "Open menu"}
->
-  <span></span>
-  <span></span>
-  <span></span>
-</button>
 
-        </nav>
-      </header>
+      <div className="kedar-chat-input-area">
+
+        <input
+          type="text"
+          value={chatInput}
+          onChange={(e) =>
+            setChatInput(e.target.value)
+          }
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              sendChatMessage();
+            }
+          }}
+          placeholder="Ask about tyres..."
+          disabled={chatLoading}
+        />
+
+        <button
+          onClick={sendChatMessage}
+          disabled={
+            chatLoading ||
+            !chatInput.trim()
+          }
+          aria-label="Send message"
+        >
+          ➤
+        </button>
+
+      </div>
+
+    </div>
+  )}
+
+
+  {/* FLOATING BUTTON */}
+  {!chatOpen && (
+    <button
+      className="kedar-chat-button"
+      onClick={() => setChatOpen(true)}
+      aria-label="Open Kedar Assistant"
+    >
+      <span>✦</span>
+    </button>
+  )}
+
+</div>
+
+      {/* =====================================================
+    NAVBAR
+===================================================== */}
+
+<header className="main-header">
+
+  {/* CENTRE LOGO */}
+  <div className="logo-section">
+    <img
+      src={`${import.meta.env.BASE_URL}logo.png`}
+      alt="Kedar Tyres"
+      className="brand-logo"
+    />
+  </div>
+
+  {/* RIGHT SIDE — ONLY HAMBURGER */}
+  <nav className="navbar-actions">
+
+    <button
+      className="nav-icon menu-icon"
+      onClick={() => setMenuOpen(prev => !prev)}
+      aria-label={menuOpen ? "Close menu" : "Open menu"}
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+  </nav>
+
+</header>
 
 
       {/* =====================================================
@@ -627,6 +821,30 @@ const searchVehicle = () => {
         Contact Us
       </a>
 
+      {/* LIKED TYRES */}
+<button
+  className="side-menu-link menu-account-link"
+  onClick={() => {
+    setMenuOpen(false);
+    setShowProductPage("favourites");
+  }}
+>
+  <span className="menu-link-icon">♡</span>
+  <span>Liked Tyres</span>
+</button>
+
+{/* LOGIN */}
+<button
+  className="side-menu-link menu-account-link"
+  onClick={() => {
+    setMenuOpen(false);
+    setShowCustomerLogin(true);
+  }}
+>
+  <span className="menu-link-icon">♙</span>
+  <span>Login</span>
+</button>
+
       {/* ADMIN CATALOGUE */}
       {adminLoggedIn && (
         <button
@@ -649,7 +867,8 @@ const searchVehicle = () => {
           MAIN WEBSITE
       ===================================================== */}
 
-      <main>
+      {!showTyreResults && (
+        <main>
 
         {/* =====================================================
             HERO
@@ -744,8 +963,8 @@ const searchVehicle = () => {
                   onClick={() => setShowProductPage("tyres")}
                 >
                   <img
-                    src={getTyreImage(tyre, index)}
-                    alt={`${tyre.size} tyre`}
+                    src="/kedar-tyres/images/tyre-default.webp"
+                    alt="Tyre"
                   />
                   <div className="home-tyre-info">
                     <strong>{tyre.size}</strong>
@@ -760,6 +979,43 @@ const searchVehicle = () => {
 
         </section>
 
+        {/* =====================================================
+    TYRE ROAD TRANSITION
+===================================================== */}
+
+<section className="tyre-road-transition">
+
+  <div className="road-content">
+
+    <div className="rolling-tyre">
+
+      <div className="tyre-wheel">
+
+        <div className="tyre-sidewall">
+
+          <div className="tyre-rim">
+
+            <div className="rim-center"></div>
+
+            <span className="rim-spoke spoke-1"></span>
+            <span className="rim-spoke spoke-2"></span>
+            <span className="rim-spoke spoke-3"></span>
+            <span className="rim-spoke spoke-4"></span>
+            <span className="rim-spoke spoke-5"></span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div className="road-line"></div>
+
+</section>
 
         {/* =====================================================
             SERVICES + TRUST POINTS
@@ -778,7 +1034,7 @@ const searchVehicle = () => {
         <div className="services-header">
 
           <div className="section-eyebrow">
-            WHAT WE DO
+            <h1>WHAT WE DO</h1>
           </div>
 
           <h2>
@@ -787,8 +1043,8 @@ const searchVehicle = () => {
           </h2>
 
           <p>
-            From fitting and repairs to wheel care and maintenance,
-            we help keep your vehicle safe and road-ready.
+            <h3>From fitting and repairs to wheel care and maintenance,
+            we help keep your vehicle safe and road-ready.</h3>
           </p>
 
         </div>
@@ -805,15 +1061,12 @@ const searchVehicle = () => {
             </span>
 
             <div className="service-icon">
-              🔧
+              🛠️
             </div>
 
             <div className="service-content">
-              <h3>Tyre Fitting</h3>
+              <h3>PUNCTURE FIXING</h3>
 
-              <p>
-                Professional tyre installation.
-              </p>
             </div>
 
             <span className="service-arrow">
@@ -832,15 +1085,12 @@ const searchVehicle = () => {
             </span>
 
             <div className="service-icon">
-              🛞
+              💨
             </div>
 
             <div className="service-content">
-              <h3>Puncture Repair</h3>
+              <h3>TYRE AIR FILLING</h3>
 
-              <p>
-                Quick and reliable puncture repair.
-              </p>
             </div>
 
             <span className="service-arrow">
@@ -863,11 +1113,8 @@ const searchVehicle = () => {
             </div>
 
             <div className="service-content">
-              <h3>Wheel Alignment</h3>
+              <h3>TYRE, TUBE SALE</h3>
 
-              <p>
-                Accurate alignment for better handling.
-              </p>
             </div>
 
             <span className="service-arrow">
@@ -890,11 +1137,8 @@ const searchVehicle = () => {
             </div>
 
             <div className="service-content">
-              <h3>Wheel Balancing</h3>
+              <h3>WHEEL ALLIGNMENT</h3>
 
-              <p>
-                Smoother and more comfortable driving.
-              </p>
             </div>
 
             <span className="service-arrow">
@@ -914,8 +1158,8 @@ const searchVehicle = () => {
             </div>
 
             <div className="service-content">
-              <h3>Tyre Rotation</h3>
-              <p>Even tyre wear and longer life.</p>
+              <h3>WHEEL BALANCING</h3>
+      
             </div>
 
             <span className="service-arrow">→</span>
@@ -932,8 +1176,8 @@ const searchVehicle = () => {
             </div>
 
             <div className="service-content">
-              <h3>Tyre Inspection</h3>
-              <p>Check your tyres before the road does.</p>
+              <h3>TYRE ROTATION</h3>
+            
             </div>
 
             <span className="service-arrow">→</span>
@@ -950,8 +1194,8 @@ const searchVehicle = () => {
             </div>
 
             <div className="service-content">
-              <h3>Tyre Replacement</h3>
-              <p>Find the right replacement for your vehicle.</p>
+              <h3>TYRE FITTING</h3>
+              
             </div>
 
             <span className="service-arrow">→</span>
@@ -968,8 +1212,8 @@ const searchVehicle = () => {
             </div>
 
             <div className="service-content">
-              <h3>Air Pressure Check</h3>
-              <p>Maintain the correct tyre pressure.</p>
+              <h3>AIR PRESSURE CHECK</h3>
+            
             </div>
 
             <span className="service-arrow">→</span>
@@ -987,16 +1231,16 @@ const searchVehicle = () => {
         <div className="trust-header">
 
           <div className="section-eyebrow">
-            WHY KEDAR TYRES
+            <h1>WHY KEDAR TYRES</h1>
           </div>
 
           <h2>
-            More than just tyres.
+            <h2>More than just tyres.</h2>
           </h2>
 
           <p>
-            We focus on getting you the right product,
-            the right service and a hassle-free experience.
+            <h3>We focus on getting you the right product,
+            the right service and a hassle-free experience.</h3>
           </p>
 
         </div>
@@ -1329,32 +1573,134 @@ const searchVehicle = () => {
         Why Us
       </a>
 
-      <a href="#contact">
-        Contact
-      </a>
-
     </div>
 
   </div>
 
+{/* FOOTER BOTTOM */}
 
-  {/* FOOTER BOTTOM */}
+<div className="footer-bottom">
 
-  <div className="footer-bottom">
+  <div className="footer-story">
 
-    <p>
-      © 2026 Kedar Tyres. All rights reserved.
-    </p>
+    {/* ROAD */}
+    <div className="footer-story-road"></div>
 
-    <span>
-      Trusted tyres. Reliable service.
-    </span>
+    {/* SMALL TYRE SHOP */}
+    <div className="footer-shop">
+
+      <div className="shop-roof"></div>
+
+      <div className="shop-building">
+        <span>KEDAR</span>
+        <span>TYRES</span>
+      </div>
+
+      <div className="shop-door"></div>
+      <div className="shop-window"></div>
+
+    </div>
+
+    {/* BIKE */}
+    <div className="story-bike">
+
+      <div className="story-bike-body"></div>
+      <div className="story-bike-frame"></div>
+      <div className="story-bike-seat"></div>
+      <div className="story-bike-handle"></div>
+
+      <div className="story-wheel story-wheel-back"></div>
+      <div className="story-wheel story-wheel-front"></div>
+
+    </div>
+
+    {/* CARTOON CRASH */}
+    <div className="story-crash">
+      <span>✦</span>
+      <span>✦</span>
+      <strong>!</strong>
+    </div>
+
+    {/* DETACHED TYRE */}
+    <div className="story-detached-tyre"></div>
+
+{/* MECHANIC */}
+
+<div className="story-mechanic">
+
+  {/* CAP */}
+  <div className="mechanic-cap">
+    <div className="mechanic-cap-bill"></div>
+  </div>
+
+  {/* HEAD */}
+  <div className="mechanic-head">
+    <div className="mechanic-eye"></div>
+    <div className="mechanic-eye mechanic-eye-second"></div>
+    <div className="mechanic-smile"></div>
+  </div>
+
+  {/* NECK */}
+  <div className="mechanic-neck"></div>
+
+  {/* BODY */}
+  <div className="mechanic-torso">
+
+    <div className="mechanic-collar-left"></div>
+    <div className="mechanic-collar-right"></div>
+
+    <div className="mechanic-pocket">
+      KT
+    </div>
 
   </div>
 
+  {/* LEFT ARM — REPAIRING */}
+  <div className="mechanic-arm mechanic-arm-left">
+    <div className="mechanic-glove"></div>
+  </div>
+
+  {/* RIGHT ARM — LATER WAVES */}
+  <div className="mechanic-arm mechanic-arm-right">
+    <div className="mechanic-glove"></div>
+  </div>
+
+  {/* WRENCH */}
+  <div className="mechanic-wrench">
+    🔧
+  </div>
+
+  {/* WAIST */}
+  <div className="mechanic-waist"></div>
+
+  {/* LEGS */}
+  <div className="mechanic-leg mechanic-leg-left"></div>
+  <div className="mechanic-leg mechanic-leg-right"></div>
+
+  {/* BOOTS */}
+  <div className="mechanic-boot mechanic-boot-left"></div>
+  <div className="mechanic-boot mechanic-boot-right"></div>
+
+</div>
+
+
+
+  </div>
+
+  <p>
+    © 2026 Kedar Tyres. All rights reserved.
+  </p>
+
+  <span>
+    Trusted tyres. Reliable service.
+  </span>
+
+</div>
+
 </footer>
 
-      </main>
+        </main>
+      )}
 
       {/* =====================================================
           FAVOURITES PAGE
@@ -1392,51 +1738,62 @@ const searchVehicle = () => {
             ) : (
               <div className="product-page-grid">
                 {favouriteTyres.map((favouriteId) => {
-                  const match = catalogueTyres
-                    .flatMap((tyre, tyreIndex) =>
-                      (tyre.brands || []).map((brand, brandIndex) => ({
-                        id: `${brand}-${tyre.size}-${brandIndex}`,
-                        tyre,
-                        brand,
-                        tyreIndex,
-                        brandIndex
-                      }))
-                    )
-                    .find((item) => item.id === favouriteId);
+  const match = catalogueVehicleTyres.find(
+    (tyre) => tyre.id === favouriteId
+  );
 
-                  if (!match) return null;
+  if (!match) {
+    return null;
+  }
 
-                  return (
-                    <article className="product-page-card" key={favouriteId}>
-                      <div className="product-page-image">
-                        <div className="tyre-image-placeholder">
-                          <img
-                            src={getTyreImage(match.tyre, match.tyreIndex)}
-                            alt={`${match.size || match.tyre.size} tyre`}
-                          />
-                        </div>
-                        <button
-                          className="product-heart is-favourite"
-                          onClick={() => toggleFavourite(match.tyre, match.brand)}
-                          aria-label="Remove favourite"
-                        >
-                          ♥
-                        </button>
-                      </div>
-                      <div className="product-page-info">
-                        <p className="product-page-brand">{match.brand}</p>
-                        <h2>{match.tyre.size}</h2>
-                        <p className="product-page-description">Available at Kedar Tyres. Contact us for current model and availability.</p>
-                        <button
-                          className="product-enquire-button"
-                          onClick={() => contactOwner("whatsapp")}
-                        >
-                          Contact owner <span>→</span>
-                        </button>
-                      </div>
-                    </article>
-                  );
-                })}
+  return (
+    <article
+      className="product-page-card"
+      key={match.id}
+    >
+      <div className="product-page-image">
+        <img
+          src="/kedar-tyres/images/tyre-default.webp"
+          alt={`${match.manufacturer} ${match.model} tyre`}
+        />
+
+        <button
+          className="product-heart is-favourite"
+          onClick={() => toggleFavourite(match.id)}
+          aria-label="Remove favourite"
+        >
+          ♥
+        </button>
+      </div>
+
+      <div className="product-page-info">
+        <p className="product-page-brand">
+          {match.manufacturer}
+        </p>
+
+        <h2>
+          {match.model}
+        </h2>
+
+        <div className="vehicle-detail-position">
+          {match.position} TYRE
+        </div>
+
+        <div className="vehicle-detail-size">
+          <span>TYRE SIZE</span>
+          <strong>{match.size}</strong>
+        </div>
+
+        <button
+          className="product-enquire-button"
+          onClick={() => contactOwner("whatsapp")}
+        >
+          Contact owner <span>→</span>
+        </button>
+      </div>
+    </article>
+  );
+})}
               </div>
             )}
           </div>
@@ -1450,162 +1807,395 @@ const searchVehicle = () => {
 {showProductPage === "tyres" && (
   <div className="product-page">
 
-    <div className="product-page-inner">
+    <div className="tyre-catalogue-layout">
 
-      {/* HEADER */}
+      {/* =================================================
+          LEFT TYRE FINDER
+      ================================================= */}
 
-      <div className="product-page-header">
-
-        <div>
-          <p className="section-eyebrow">
-            KEDAR TYRES
-          </p>
-
-          <h1>
-            Find the right
-            <br />
-            <span>tyres for your vehicle.</span>
-          </h1>
-
-          <p>
-            Explore our tyre catalogue and find the right
-            size and brand for your vehicle.
-          </p>
-        </div>
-
-        <button
-          className="product-back-button"
-          onClick={() => setShowProductPage(null)}
-        >
-          ← Back
-        </button>
-
-      </div>
+      <aside className="tyre-finder-panel">
 
 
-      {/* FILTER / COUNT */}
+        <h2>
+          Find your tyre here
+        </h2>
 
-      <div className="product-filter-bar">
+        <p className="tyre-finder-description">
+          Search by tyre size or select your vehicle to find
+          compatible tyres.
+        </p>
 
-        <div className="product-filter-info">
-          <span className="filter-dot"></span>
 
-          <span>
-            {catalogueTyres.length} tyre sizes
+        {/* MODE TOGGLE */}
+
+        <div className="tyre-finder-toggle-wrapper">
+
+          <span className={tyreFinderMode === "size" ? "active" : ""}>
+            TYRE SIZE
           </span>
+
+          <button
+            type="button"
+            className={`tyre-finder-toggle ${
+              tyreFinderMode === "vehicle" ? "vehicle-mode" : ""
+            }`}
+            onClick={() =>
+              setTyreFinderMode(
+                tyreFinderMode === "size"
+                  ? "vehicle"
+                  : "size"
+              )
+            }
+            aria-label="Toggle tyre search method"
+          >
+            <span className="tyre-finder-toggle-knob"></span>
+          </button>
+
+          <span className={tyreFinderMode === "vehicle" ? "active" : ""}>
+            VEHICLE
+          </span>
+
         </div>
 
-        <span className="product-filter-label">
-          Available at Kedar Tyres
-        </span>
 
-      </div>
+        {/* =================================================
+            TYRE SIZE MODE
+        ================================================= */}
+
+        {tyreFinderMode === "size" && (
+
+          <div className="tyre-finder-content">
+
+            <p className="tyre-finder-label">
+              PUT YOUR TYRE SIZE
+            </p>
+
+            <p className="tyre-finder-help">
+              Enter the size written on the sidewall of your tyre.
+            </p>
+
+            <input
+              className="catalogue-size-input"
+              type="text"
+              placeholder="e.g. 195/65 R15"
+              value={tyreSize}
+              onChange={(e) => setTyreSize(e.target.value)}
+            />
+
+            <button
+              type="button"
+              className="catalogue-search-button"
+              onClick={() => {
+                setSearchType("tyres");
+                setSearchOpen(true);
+              }}
+            >
+              FIND YOUR TYRE
+              <span>→</span>
+            </button>
+
+            <button
+              type="button"
+              className="catalogue-guide-button"
+              onClick={() => {
+                setSearchType("tyres");
+                setSearchOpen(true);
+                setShowTyreGuide(true);
+              }}
+            >
+              Don't know your tyre size?
+              <span>Learn how →</span>
+            </button>
+
+          </div>
+
+        )}
 
 
-      {/* TYRE GRID */}
+        {/* =================================================
+            VEHICLE MODE
+        ================================================= */}
 
-      <div className="product-page-grid">
+        {tyreFinderMode === "vehicle" && (
 
-        {catalogueTyres.map((tyre, index) => (
+          <div className="tyre-finder-content">
 
-          <article
-            className="product-page-card"
-            key={`${tyre.size}-${index}`}
+            <p className="tyre-finder-label">
+              PUT YOUR VEHICLE INFO
+            </p>
+
+            <p className="tyre-finder-help">
+              Select your vehicle brand and model to find
+              compatible tyres.
+            </p>
+
+
+            <label className="catalogue-field-label">
+              VEHICLE BRAND
+            </label>
+
+            <select
+              className="catalogue-select"
+              value={vehicleBrand}
+              onChange={(e) => {
+                setVehicleBrand(e.target.value);
+                setVehicleModel("");
+                setVehicleResults([]);
+              }}
+            >
+              <option value="">
+                Select vehicle brand
+              </option>
+
+              {vehicleBrands.map((brand) => (
+                <option key={brand} value={brand}>
+                  {brand}
+                </option>
+              ))}
+            </select>
+
+
+            <label className="catalogue-field-label">
+              VEHICLE MODEL
+            </label>
+
+            <select
+              className="catalogue-select"
+              value={vehicleModel}
+              onChange={(e) => {
+                setVehicleModel(e.target.value);
+                setVehicleResults([]);
+              }}
+              disabled={!vehicleBrand}
+            >
+              <option value="">
+                {vehicleBrand
+                  ? "Select vehicle model"
+                  : "Select brand first"}
+              </option>
+
+              {vehicleModels.map((model, index) => (
+                <option
+                  key={`${model}-${index}`}
+                  value={model}
+                >
+                  {model.trim()}
+                </option>
+              ))}
+            </select>
+
+
+            <button
+              type="button"
+              className="catalogue-search-button"
+              onClick={() => {
+                searchVehicle();
+              }}
+              disabled={!vehicleBrand || !vehicleModel}
+            >
+              FIND COMPATIBLE TYRES
+              <span>→</span>
+            </button>
+
+          </div>
+
+        )}
+
+      </aside>
+
+
+      {/* =================================================
+          RIGHT CATALOGUE
+      ================================================= */}
+
+      <main className="tyre-catalogue-content">
+
+        <div className="catalogue-content-header">
+
+          <div>
+
+            <p className="section-eyebrow">
+              OUR CATALOGUE
+            </p>
+
+            <h1>
+              Find The Right Tyre
+              <br />
+              <span>For Your Vehicle</span>
+            </h1>
+
+            <p>
+              Explore our tyre catalogue and find the right
+              size and brand for your vehicle.
+            </p>
+
+          </div>
+
+
+          <button
+            className="product-back-button"
+            onClick={() => setShowProductPage(null)}
           >
+            ← Back
+          </button>
 
-            <div className="product-page-image">
+        </div>
 
-              <div className="tyre-image-placeholder">
+
+        {/* FILTER / COUNT */}
+
+        <div className="product-filter-bar">
+
+          <div className="product-filter-info">
+
+            <span className="filter-dot"></span>
+
+            <span>
+              {catalogueVehicleTyres.length} tyre options
+            </span>
+
+          </div>
+
+          <span className="product-filter-label">
+            Available at Kedar Tyres
+          </span>
+
+        </div>
+
+
+        {/* EXISTING TYRE CATALOGUE */}
+
+        <div className="product-page-grid">
+
+          {catalogueVehicleTyres.map((tyre, index) => (
+
+            <article
+              className="product-page-card"
+              key={tyre.id}
+              onClick={() =>
+                setSelectedTyre({
+                  type: "vehicle",
+                  manufacturer: tyre.manufacturer,
+                  model: tyre.model,
+                  position: tyre.position,
+                  size: tyre.size,
+                  imageKey: tyre.imageKey,
+                })
+              }
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+
+                if (
+                  e.key === "Enter" ||
+                  e.key === " "
+                ) {
+
+                  e.preventDefault();
+
+                  setSelectedTyre({
+                    type: "vehicle",
+                    manufacturer: tyre.manufacturer,
+                    model: tyre.model,
+                    position: tyre.position,
+                    size: tyre.size,
+                    imageKey: tyre.imageKey,
+                  });
+
+                }
+
+              }}
+            >
+
+              <div className="product-page-image">
+
                 <img
-                  src={getTyreImage(tyre, index)}
-                  alt={`${tyre.size} tyre`}
+                  src="/kedar-tyres/images/tyre-default.webp"
+                  alt="Tyre"
                 />
+
+                <button
+                  className={`product-heart ${
+                    isTyreFavourite(tyre.id)
+                      ? "is-favourite"
+                      : ""
+                  }`}
+                  aria-label={
+                    isTyreFavourite(tyre.id)
+                      ? "Remove favourite"
+                      : "Favourite tyre"
+                  }
+                  onClick={(e) => {
+
+                    e.stopPropagation();
+
+                    toggleFavourite(tyre.id);
+
+                  }}
+                >
+                  {isTyreFavourite(tyre.id)
+                    ? "♥"
+                    : "♡"}
+                </button>
+
               </div>
 
-              <button
-                className={`product-heart ${
-                  isTyreFavourite(tyre, tyre.brands?.[0] || "Multiple Brands")
-                    ? "is-favourite"
-                    : ""
-                }`}
-                aria-label="Favourite tyre"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleFavourite(tyre, tyre.brands?.[0] || "Multiple Brands");
-                }}
-              >
-                {isTyreFavourite(tyre, tyre.brands?.[0] || "Multiple Brands") ? "♥" : "♡"}
-              </button>
 
-            </div>
+              <div className="product-page-info">
 
+                <p className="product-page-brand">
+                  {tyre.manufacturer}
+                </p>
 
-            <div className="product-page-info">
+                <h2>
+                  {tyre.model}
+                </h2>
 
-              <p className="product-page-brand">
-                Multiple Brands
-              </p>
+                <div className="vehicle-detail-position">
+                  {tyre.position} TYRE
+                </div>
 
-              <h2>
-                {tyre.size}
-              </h2>
+                <div className="vehicle-detail-size">
 
-
-              <div className="product-size-list">
-
-                {tyre.brands.map((brand, brandIndex) => (
-
-                  <span key={`${brand}-${brandIndex}`}>
-                    {brand}
+                  <span>
+                    TYRE SIZE
                   </span>
 
-                ))}
+                  <strong>
+                    {tyre.size}
+                  </strong>
+
+                </div>
 
               </div>
 
+            </article>
 
-              <p className="product-page-description">
-                Tyre size available at Kedar Tyres.
-                Contact us for the exact tyre model,
-                price and current availability.
-              </p>
+          ))}
 
-
-              <button
-                className="product-enquire-button"
-                onClick={() => contactOwner("whatsapp")}
-              >
-                Contact owner
-                <span>→</span>
-              </button>
-
-            </div>
-
-          </article>
-
-        ))}
-
-      </div>
+        </div>
 
 
-      {/* BOTTOM NOTE */}
+        {/* BOTTOM NOTE */}
 
-      <div className="product-page-note">
+        <div className="product-page-note">
 
-        <span>●</span>
+          <span>●</span>
 
-        Can't find your tyre?
+          Can't find your tyre?
 
-        <button
-          onClick={() => {
-            setShowProductPage(null);
-            openSearch();
-          }}
-        >
-          Search by size →
-        </button>
+          <button
+            onClick={() => {
+              setShowProductPage(null);
+              openSearch();
+            }}
+          >
+            Search by size →
+          </button>
 
-      </div>
+        </div>
+
+      </main>
 
     </div>
 
@@ -1745,7 +2335,7 @@ const searchVehicle = () => {
                 <input
                   className="size-input"
                   type="text"
-                  placeholder="e.g. 195/65 R15"
+                  placeholder="e.g. 195/65 R15 or 2.75-17"
                   value={tyreSize}
                   onChange={(e) => setTyreSize(e.target.value)}
                 />
@@ -1763,23 +2353,16 @@ const searchVehicle = () => {
 
                 </button>
 
-
-                <button
-                  className="continue-button"
-                  onClick={() => {
-
-                    if (tyreSize.trim() !== "") {
-
-                      setSearchOpen(false);
-                      setShowTyreResults(true);
-
-                    }
-
-                  }}
-                >
-                  Continue
-                  <span>→</span>
-                </button>
+<button
+  type="button"
+  className="continue-button"
+  onClick={() => {
+    setShowTyreResults(true);
+  }}
+>
+  Continue
+  <span>→</span>
+</button>
 
               </div>
 
@@ -1895,84 +2478,130 @@ const searchVehicle = () => {
       ===================================================== */}
 
         {selectedTyre && (
-          <div
-            className="tyre-detail-overlay"
-            onClick={() => setSelectedTyre(null)}
-          >
-            <div
-              className="tyre-detail-modal"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                className="tyre-detail-close"
-                onClick={() => setSelectedTyre(null)}
-                aria-label="Close tyre details"
-              >
-                ×
-              </button>
+  <div
+    className="tyre-detail-overlay"
+    onClick={() => setSelectedTyre(null)}
+  >
 
-              <div className="tyre-detail-image">
-                <div className="tyre-image-placeholder tyre-detail-tyre">
-                  <span>TYRE</span>
-                </div>
-              </div>
+    <div
+      className="tyre-detail-modal"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <img
+  src="/kedar-tyres/images/tyre-default.webp"
+  alt="Tyre"
+  className="tyre-detail-popup-image"
+/>
+      {/* CLOSE */}
+      <button
+        className="tyre-detail-close"
+        onClick={() => setSelectedTyre(null)}
+        aria-label="Close tyre details"
+      >
+        ×
+      </button>
 
-              <div className="tyre-detail-content">
 
-                <p className="tyre-brand">
-                  {selectedTyre.brand}
-                </p>
+      {/* DETAILS */}
+      <div className="tyre-detail-content">
+        {selectedTyre.type === "vehicle" ? (
+          <>
 
-                <h2>
-                  {selectedTyre.size}
-                </h2>
+            <p className="tyre-brand">
+              {selectedTyre.manufacturer}
+            </p>
 
-                <p className="tyre-detail-status">
-                  Available at Kedar Tyres
-                </p>
+            <h2>
+              {selectedTyre.model}
+            </h2>
 
-                <p className="tyre-detail-description">
-                  Contact the owner for the exact tyre model,
-                  price and current availability.
-                </p>
-
-                <button
-                  className="contact-owner-button tyre-contact-glow"
-                  onClick={() => contactOwner("whatsapp")}
-                >
-                  CONTACT OWNER →
-                </button>
-
-              </div>
+            <div className="vehicle-detail-position">
+              {selectedTyre.position} TYRE
             </div>
-          </div>
+
+            <div className="vehicle-detail-size">
+
+              <span>TYRE SIZE</span>
+
+              <strong>
+                {selectedTyre.size}
+              </strong>
+
+            </div>
+
+            <p className="tyre-detail-status">
+              Available
+            </p>
+
+            <p className="tyre-detail-description">
+              Available in every brand.
+              Please contact the owner for your preferred brand, exact size,
+              tyre information, price and current availability.
+            </p>
+
+            <button
+              className="contact-owner-button tyre-contact-glow"
+              onClick={() => contactOwner("call")}
+            >
+              CONTACT OWNER →
+            </button>
+
+          </>
+
+        ) : (
+
+          <>
+
+            <p className="tyre-brand">
+              {selectedTyre.brand}
+            </p>
+
+            <h2>
+              {selectedTyre.size}
+            </h2>
+
+            <p className="tyre-detail-status">
+              Available at Kedar Tyres
+            </p>
+
+            <p className="tyre-detail-description">
+              Contact the owner for the exact tyre model,
+              preferred brand, price and current availability.
+            </p>
+
+            <button
+              className="contact-owner-button tyre-contact-glow"
+              onClick={() => contactOwner("whatsapp")}
+            >
+              CONTACT OWNER →
+            </button>
+
+          </>
+
         )}
+
+      </div>
+
+    </div>
+
+  </div>
+)}
 
       {showTyreResults && (
 
         <div className="tyre-results-page">
-
-          <header className="results-header">
-
-            <button
-              className="results-back"
-              onClick={() => {
-
-                setShowTyreResults(false);
-                setSearchOpen(true);
-                setSearchType("tyres");
-
-              }}
-            >
-              ←
-            </button>
-
-            <div className="results-brand">
-              KEDAR TYRES
-            </div>
-
-          </header>
-
+          <button
+            className="results-close"
+            onClick={() => {
+              setShowTyreResults(false);
+              setSearchOpen(false);
+              setSearchType(null);
+              setTyreSize("");
+            }}
+            aria-label="Close results"
+          >
+            ×
+          </button>
 
           <main className="results-content">
 
@@ -2015,10 +2644,18 @@ const searchVehicle = () => {
 
               {(() => {
                 const normalizeSize = (size) =>
-                  size
+                  String(size || "")
                     .toUpperCase()
-                    .replace(/\\s+/g, "")
-                    .replace(/-/g, "");
+                    .trim()
+                    .replace(/[–—−]/g, "-")
+                    .replace(/\//g, "-")
+                    .replace(/\s+/g, "-")
+                    // Car sizes may be written as 195/65 R15;
+                    // the catalogue stores the same size as 195-65-15.
+                    .replace(/-R(?=\d)/g, "-")
+                    .replace(/R(?=\d)/g, "")
+                    .replace(/-+/g, "-")
+                    .replace(/^-|-$/g, "");     
 
                 const searchedSize = normalizeSize(tyreSize);
 
@@ -2070,10 +2707,11 @@ const searchVehicle = () => {
                     >
                       <div className="tyre-card-image">
 
-                        <div className="tyre-image-placeholder">
-                          <span>TYRE</span>
-                        </div>
-
+                        <img
+  src="/kedar-tyres/images/tyre-default.webp"
+  alt="Tyre"
+  className="tyre-detail-image"
+/>
                         <button
                           className={`favourite-button ${
                             isFavourite ? "is-favourite" : ""
@@ -2092,21 +2730,19 @@ const searchVehicle = () => {
 
                       </div>
 
-                      <div className="tyre-card-info">
+<div className="tyre-card-info">
+  <p className="tyre-brand">
+    {brand}
+  </p>
 
-                        <p className="tyre-brand">
-                          {brand}
-                        </p>
+  <h2>
+    {matchingEntry.size}
+  </h2>
 
-                        <h2>
-                          {matchingEntry.size}
-                        </h2>
-
-                        <p className="tyre-availability">
-                          Available
-                        </p>
-
-                      </div>
+  <p className="tyre-availability">
+    Available
+  </p>
+</div>
                     </article>
                   );
                 });
@@ -2125,22 +2761,25 @@ const searchVehicle = () => {
 
     <header className="results-header">
 
-      <button
-        className="results-back"
-        onClick={() => {
-          setVehicleResults([]);
-          setSearchOpen(true);
-          setSearchType("vehicle");
-        }}
-      >
-        ←
-      </button>
+  <div className="results-brand">
+    KEDAR TYRES
+  </div>
 
-      <div className="results-brand">
-        KEDAR TYRES
-      </div>
+  <button
+  className="results-close"
+  onClick={() => {
+    setVehicleResults([]);
+    setSearchOpen(false);
+    setSearchType(null);
+    setVehicleBrand("");
+    setVehicleModel("");
+  }}
+  aria-label="Exit vehicle results"
+>
+  ×
+</button>
 
-    </header>
+</header>
 
 
     <main className="results-content">
@@ -2182,74 +2821,81 @@ const searchVehicle = () => {
 
       <div className="vehicle-compatible-grid">
 
-        {vehicleResults.map((vehicle, index) => (
+  {vehicleResults.map((vehicle, index) => {
 
-          <div
-            className="vehicle-compatible-card"
-            key={`${vehicle.manufacturer}-${vehicle.model}-${index}`}
-          >
+    const tyrePositions = getVehicleTyrePositions(vehicle);
 
-            <div className="vehicle-compatible-header">
+    return tyrePositions.map((tyre, tyreIndex) => {
 
-              <div>
+      const imageKey =
+        `${vehicle.manufacturer}-${vehicle.model}-${tyre.position}`
+          .trim()
+          .toUpperCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^A-Z0-9-]/g, "");
 
-                <p className="tyre-brand">
-                  {vehicle.manufacturer}
-                </p>
+      return (
+        <article
+          className="vehicle-compatible-card"
+          key={`${vehicle.manufacturer}-${vehicle.model}-${tyre.position}-${index}-${tyreIndex}`}
+          onClick={() =>
+            setSelectedTyre({
+              type: "vehicle",
+              manufacturer: vehicle.manufacturer,
+              model: vehicle.model.trim(),
+              position: tyre.position,
+              size: tyre.size,
+              imageKey: imageKey
+            })
+          }
+        >
 
-                <h2>
-                  {vehicle.model.trim()}
-                </h2>
+          {/* TYRE IMAGE */}
+          <div className="vehicle-compatible-image">
 
-              </div>
-
-            </div>
-
-
-            <div className="vehicle-size-row">
-
-              {vehicle.front && (
-                <div className="vehicle-size-box">
-
-                  <span>FRONT</span>
-
-                  <strong>
-                    {vehicle.front}
-                  </strong>
-
-                </div>
-              )}
-
-
-              {vehicle.rear && (
-                <div className="vehicle-size-box">
-
-                  <span>REAR</span>
-
-                  <strong>
-                    {vehicle.rear}
-                  </strong>
-
-                </div>
-              )}
-
-            </div>
-
-
-            <button
-              className="enquire-button"
-              onClick={() => contactOwner("whatsapp")}
-            >
-              Enquire on WhatsApp
-              <span>→</span>
-            </button>
+            <img
+              src="/kedar-tyres/images/tyre-default.webp"
+              alt="Tyre"
+              className="vehicle-compatible-real-image"
+            />
 
           </div>
 
-        ))}
 
-      </div>
+          {/* CARD INFORMATION */}
+          <div className="vehicle-compatible-info">
 
+            <p className="tyre-brand">
+              {vehicle.manufacturer}
+            </p>
+
+            <h2>
+              {vehicle.model.trim()}
+            </h2>
+
+            <div className="vehicle-card-position">
+              {tyre.position} TYRE
+            </div>
+
+            <p className="vehicle-card-size">
+              {tyre.size}
+            </p>
+
+            <p className="vehicle-availability">
+              Available
+            </p>
+
+          </div>
+
+        </article>
+      );
+
+    });
+
+  })}
+
+</div>
+          
     </main>
 
   </div>
@@ -2302,87 +2948,36 @@ const searchVehicle = () => {
                 <div className="form-field">
 
                   <label>
-                    Width
+                    Tyre Size
                   </label>
 
                   <input
-                    placeholder="e.g. 195"
+                    className="size-input"
+                    type="text"
+                    placeholder="e.g. 195/65 R15 or 2.75-17"
+                    value={tyreSize}
+                    onChange={(e) => setTyreSize(e.target.value)}
                   />
 
                   <span>
-                    Millimetres
+                    Car: 195/65 R15 &nbsp; • &nbsp; Bike: 2.75-17
                   </span>
-
-                </div>
-
-
-                <div className="form-field">
-
-                  <label>
-                    Aspect Ratio
-                  </label>
-
-                  <input
-                    placeholder="e.g. 55"
-                  />
-
-                  <span>
-                    Percentage
-                  </span>
-
-                </div>
-
-
-                <div className="form-field">
-
-                  <label>
-                    Rim Diameter
-                  </label>
-
-                  <input
-                    placeholder="e.g. 16"
-                  />
-
-                  <span>
-                    Inches
-                  </span>
-
-                </div>
-
-
-                <div className="form-row">
-
-                  <div className="form-field">
-
-                    <label>
-                      Load Index
-                    </label>
-
-                    <input
-                      placeholder="e.g. 87"
-                    />
-
-                  </div>
-
-
-                  <div className="form-field">
-
-                    <label>
-                      Speed Index
-                    </label>
-
-                    <input
-                      placeholder="e.g. V"
-                    />
-
-                  </div>
 
                 </div>
 
               </div>
 
 
-              <button className="find-button">
+              <button
+                className="find-button"
+                type="button"
+                onClick={() => {
+                  setShowTyreGuide(false);
+                  setSearchOpen(false);
+                  setSearchType(null);
+                  setShowTyreResults(true);
+                }}
+              >
                 Find Tyres
                 <span>→</span>
               </button>
@@ -2401,7 +2996,7 @@ const searchVehicle = () => {
                 </p>
 
                 <h2>
-                  Find the numbers
+                  Find the size
                   <br />
                   on your tyre
                 </h2>
@@ -2422,57 +3017,13 @@ const searchVehicle = () => {
               <div className="code-explanation">
 
                 <div>
-                  <strong>
-                    195
-                  </strong>
-
-                  <span>
-                    Width
-                  </span>
+                  <strong>195/65 R15</strong>
+                  <span>Car tyre size</span>
                 </div>
 
-
                 <div>
-                  <strong>
-                    55
-                  </strong>
-
-                  <span>
-                    Aspect ratio
-                  </span>
-                </div>
-
-
-                <div>
-                  <strong>
-                    R16
-                  </strong>
-
-                  <span>
-                    Rim diameter
-                  </span>
-                </div>
-
-
-                <div>
-                  <strong>
-                    87
-                  </strong>
-
-                  <span>
-                    Load index
-                  </span>
-                </div>
-
-
-                <div>
-                  <strong>
-                    V
-                  </strong>
-
-                  <span>
-                    Speed index
-                  </span>
+                  <strong>2.75-17</strong>
+                  <span>Bike tyre size</span>
                 </div>
 
               </div>
