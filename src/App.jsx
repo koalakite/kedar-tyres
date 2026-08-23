@@ -564,6 +564,12 @@ const googleReviews = [
 ];
 
 useEffect(() => {
+  if (window.location.hash === "#admin") {
+    setShowAdminLogin(true);
+  }
+}, []);
+
+useEffect(() => {
   try {
     localStorage.setItem("kedarTyresCatalogue", JSON.stringify(catalogueTyres));
   } catch {
@@ -2341,18 +2347,6 @@ const searchVehicle = () => {
                 />
 
 
-                <button
-                  className="guide-link"
-                  onClick={() => setShowTyreGuide(true)}
-                >
-                  Don't know your tyre size?
-
-                  <span>
-                    Learn how to find it →
-                  </span>
-
-                </button>
-
 <button
   type="button"
   className="continue-button"
@@ -3265,17 +3259,6 @@ const searchVehicle = () => {
                 {loginMessage}
               </p>
             )}
-
-            <button
-              type="button"
-              className="admin-login-link"
-              onClick={() => {
-                setShowCustomerLogin(false);
-                setShowAdminLogin(true);
-              }}
-            >
-              Owner / Admin Login
-            </button>
           </div>
         </div>
       )}
@@ -3292,7 +3275,7 @@ const searchVehicle = () => {
             <h2>Admin login.</h2>
             <p className="login-subtitle">Manage the tyre catalogue from here.</p>
 
-            <input value={adminLogin.name} onChange={(e) => setAdminLogin({ ...adminLogin, name: e.target.value })} placeholder="Admin Name" />
+            <input value={adminLogin.name} onChange={(e) => setAdminLogin({ ...adminLogin, name: e.target.value })} placeholder="Admin Email" />
             <input type="password" value={adminLogin.password} onChange={(e) => setAdminLogin({ ...adminLogin, password: e.target.value })} placeholder="Admin Password" />
 
             <button
